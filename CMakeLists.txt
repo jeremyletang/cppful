@@ -36,3 +36,4 @@ set_target_properties(simple_server
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
 )
+
