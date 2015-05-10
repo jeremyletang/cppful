@@ -26,6 +26,7 @@
 #include <unordered_map>
 #include <vector>
 #include <method.h>
+#include <regex>
 
 #include "route.h"
 
@@ -33,16 +34,28 @@ namespace cf {
 
 struct router {
 private:
+    const std::regex find_var_regex = std::regex(":[-_a-zA-Z0-9]*");
+    const std::regex find_wildcard_regex = std::regex("(\\*)");
+    const std::regex find_two_wildcard_regex = std::regex("(\\*\\*)");
+    const std::regex find_placeholder_regex = std::regex("(__TWO_WILDCARD_PLACEHOLDER__)");
+    static const std::string var_regex;
+    static const std::string wildcard_regex;
+    static const std::string two_wildcard_regex;
+
 
     struct route_wrapper {
         std::function<cf::response(cf::context&)> handler;
         std::vector<std::string> middlewares;
+        std::regex match_path;
+        std::vector<std::string> var_names;
 
         route_wrapper() = delete;
         route_wrapper(route_wrapper&& oth);
         route_wrapper(const route_wrapper& oth);
         route_wrapper(std::function<cf::response(cf::context&)>&& handler,
-                      std::vector<std::string>&& middlewares);
+                      std::vector<std::string>&& middlewares,
+                      std::regex&& math_path,
+                      std::vector<std::string>&& var_names);
 
         ~route_wrapper() = default;
 
@@ -51,6 +64,11 @@ private:
     };
 
     std::unordered_map<std::string, std::unordered_map<cf::method, route_wrapper>> routes;
+
+    std::string sanitize_path(std::string);
+    std::pair<std::regex, std::vector<std::string>> make_route_regex(std::string path);
+    std::vector<std::string> make_var_captures(std::string path);
+    bool insert(std::string path, cf::method method, route_wrapper&& rw);
 
 public:
     router() = default;
@@ -62,6 +80,8 @@ public:
 
     router& operator=(router&& oth);
     router& operator=(const router& oth);
+
+    cf::response dispatch(cf::context& ctxt);
 
 };
 

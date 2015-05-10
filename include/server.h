@@ -33,15 +33,19 @@ namespace cf {
 
 struct server {
 private:
+    cf::router router;
     std::string ip;
     unsigned int port;
-    cf::router router;
+    std::string mime;
 
 public:
     server() = default;
     server(server&& oth);
     server(const server& oth);
-    server(std::string h, unsigned ip, cf::router r);
+    server(cf::router r,
+           std::string h = "0.0.0.0",
+           unsigned ip = 8080,
+           std::string mime = "application/json");
     server(server& oth);
 
     ~server() = default;

@@ -31,6 +31,7 @@ void sigint_handler(int sig) {
 
 cf::response ok(cf::context& ctx) { return "hello world"; }
 cf::response no_content(cf::context& ctx) { return {}; }
+cf::response no_content_post(cf::context& ctx) { return {}; }
 cf::response bad_request(cf::context& ctx) {
     return { cf::status::bad_request, cf::to_string(cf::status::bad_request) };
 }
@@ -39,10 +40,14 @@ int main() {
     std::signal(SIGINT, sigint_handler);
     auto app_ = cf::server{};
     auto app = cf::server {
-        "127.0.0.1",
-        8881,
         { { cf::method::get, "/ok", ok },
           { cf::method::get, "/no_content", no_content },
-          { cf::method::get, "/bad_request", bad_request } }
+          { cf::method::post, "/no_content", no_content_post },
+          { cf::method::get, "/bad_request", bad_request },
+          { cf::method::get, "/closure", [&](auto ctx){ return "closure"; } },
+          { cf::method::get, "////sani////ti///i///z///e", ok },
+          { cf::method::get, "/route/:with/a/lot/:of/:var", ok },
+          { cf::method::get, "/route/:with/*/wildcard/*/and/**/double/*", ok },
+          { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok } }
     };
 }

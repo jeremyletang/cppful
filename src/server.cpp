@@ -25,36 +25,39 @@
 namespace cf {
 
 server::server(server&& oth)
-: ip(std::move(oth.ip))
+: router(std::move(oth.router))
+, ip(std::move(oth.ip))
 , port(std::move(oth.port))
-, router(std::move(oth.router)) {}
+, mime(std::move(oth.mime)) {}
 
 server::server(const server& oth)
-: ip(oth.ip)
+: router(oth.router)
+, ip(oth.ip)
 , port(oth.port)
-, router(oth.router) {}
+, mime(oth.mime) {}
 
-server::server(std::string ip, unsigned int port, cf::router router)
-: ip(std::move(ip))
+server::server(cf::router router, std::string ip, unsigned int port, std::string mime)
+: router(std::move(router))
+, ip(std::move(ip))
 , port(std::move(port))
-, router(std::move(router)) {
-    std::cout << "here" << std::endl;
-}
+, mime(std::move(mime)) {}
 
 server& server::operator=(const server& oth) {
     if (this != &oth) {
+        this->router = oth.router;
         this->ip = oth.ip;
         this->port = oth.port;
-        this->router = oth.router;
+        this->mime = oth.mime;
     }
     return *this;
 }
 
 server& server::operator=(server&& oth) {
     if (this != &oth) {
+        this->router = std::move(oth.router);
         this->ip = std::move(oth.ip);
         this->port = std::move(oth.port);
-        this->router = std::move(oth.router);
+        this->mime = std::move(oth.mime);
     }
     return *this;
 }

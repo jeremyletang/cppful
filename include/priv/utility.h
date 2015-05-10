@@ -26,9 +26,7 @@
 namespace cf {
 
 unsigned constexpr hash_(const char* s_to_h) {
-    return *s_to_h ?
-        static_cast<unsigned int>(*s_to_h) + 33 * hash_(s_to_h + 1) :
-        5381;
+    return *s_to_h ? static_cast<unsigned int>(*s_to_h) + 33 * hash_(s_to_h + 1) : 5381;
 }
 
 }
