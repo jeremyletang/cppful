@@ -38,7 +38,7 @@ void stop_middleware(cf::context& ctx) {
     throw cf::stop{ { cf::status::not_implemented, cf::to_string(cf::status::not_implemented) } };
 }
 
-cf::response ok(cf::context& ctx) { return "hello world"; }
+cf::response ok(cf::context& ctx) { return "hello"; }
 cf::response no_content(cf::context& ctx) { return {}; }
 cf::response no_content_post(cf::context& ctx) { return {}; }
 cf::response bad_request(cf::context& ctx) {

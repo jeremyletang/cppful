@@ -20,37 +20,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_RESPONSE
-#define CPPFUL_RESPONSE
-
-#include <map>
-#include <string>
-
-#include "status.h"
+#include "cppful/response.h"
+#include <iostream>
 
 namespace cf {
 
-struct response {
-private:
-    cf::status status;
-    std::string body;
-    std::map<std::string, std::string> headers;
+response::response(response&& oth)
+: status(std::move(oth.status))
+, body(std::move(oth.body))
+, headers(std::move(oth.headers)) {}
 
-public:
-    response() = default;
-    response(response&& oth);
-    response(const response& oth);
-    response(const char* body);
-    response(const std::string& body);
-    response(cf::status m, const std::string& body);
+response::response(const response& oth)
+: status(oth.status)
+, body(oth.body)
+, headers(oth.headers) {}
 
-    ~response() = default;
+response::response(const char* body)
+: status(cf::status::ok)
+, body(body)
+, headers({}) {}
 
-    response& operator=(response&& oth);
-    response& operator=(const response& oth);
+response::response(const std::string& body)
+: status(cf::status::ok)
+, body(body)
+, headers({}) {}
 
-};
+response::response(cf::status m, const std::string& body)
+: status(m)
+, body(body)
+, headers({})  {}
 
+
+response& response::operator=(response&& oth) {
+    if (this != &oth) {
+        this->status = std::move(oth.status);
+        this->body = std::move(oth.body);
+        this->headers = std::move(oth.headers);
+    }
+    return *this;
 }
 
-#endif
+response& response::operator=(const response& oth) {
+    if (this != &oth) {
+        this->status = oth.status;
+        this->body = oth.body;
+        this->headers = oth.headers;
+    }
+    return *this;
+}
+
+}

@@ -2,6 +2,34 @@
 
 namespace cf {
 
+middleware_wrapper::middleware_wrapper(middleware_wrapper&& oth)
+: route(std::move(oth.route))
+, middleware(std::move(oth.middleware))
+, kind(oth.kind) {}
+
+middleware_wrapper::middleware_wrapper(const middleware_wrapper& oth)
+: route(oth.route)
+, middleware(oth.middleware)
+, kind(oth.kind) {}
+
+middleware_wrapper& middleware_wrapper::operator=(middleware_wrapper&& oth) {
+    if (this != &oth) {
+        this->route = std::move(oth.route);
+        this->middleware = std::move(oth.middleware);
+        this->kind = oth.kind;
+    }
+    return *this;
+}
+
+middleware_wrapper& middleware_wrapper::operator=(const middleware_wrapper& oth) {
+    if (this != &oth) {
+        this->route = oth.route;
+        this->middleware = oth.middleware;
+        this->kind = oth.kind;
+    }
+    return *this;
+}
+
 bool middleware_wrapper::is_route() {
     return this->kind == middleware_kind::route;
 }

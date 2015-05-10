@@ -37,6 +37,8 @@ private:
 
 public:
     middleware_wrapper() = delete;
+    middleware_wrapper(middleware_wrapper&& oth);
+    middleware_wrapper(const middleware_wrapper& oth);
     // build a route
     template<typename H>
     middleware_wrapper(cf::method m,
@@ -58,12 +60,16 @@ public:
                       "error, middleware handler must be convertible to std::function");
     }
 
+    ~middleware_wrapper() = default;
+
+    middleware_wrapper& operator=(middleware_wrapper&& oth);
+    middleware_wrapper& operator=(const middleware_wrapper& oth);
+
     bool is_route();
     bool is_middleware();
     cf::route&& unwrap_route();
     cf::middleware&& unwrap_middleware();
 
-    ~middleware_wrapper() = default;
 };
 
 }

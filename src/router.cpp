@@ -143,7 +143,7 @@ void router::extract_from_wrappers() {
 }
 
 cf::response router::dispatch(cf::context& ctxt) {
-
+    return cf::response{};
 }
 
 
