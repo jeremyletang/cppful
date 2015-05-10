@@ -36,7 +36,7 @@ router::router(const router& oth)
 : routes(oth.routes)
 , init_routes(oth.init_routes) {}
 
-router::router(std::initializer_list<cf::route> routes)
+router::router(std::initializer_list<cf::middleware> routes)
 : init_routes(routes) {}
 
 router& router::operator=(router&& oth) {
@@ -121,6 +121,10 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
         this->routes.emplace(std::move(path), std::move(route_wrapper_map));
     }
     return true;
+}
+
+cf::response router::dispatch(cf::context& ctxt) {
+    
 }
 
 

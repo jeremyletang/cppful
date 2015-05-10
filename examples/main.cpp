@@ -38,7 +38,6 @@ cf::response bad_request(cf::context& ctx) {
 
 int main() {
     std::signal(SIGINT, sigint_handler);
-    auto app_ = cf::server{};
     auto app = cf::server {
         { { cf::method::get, "/ok", ok },
           { cf::method::get, "/no_content", no_content },
@@ -49,7 +48,10 @@ int main() {
           { cf::method::get, "////sani////ti///i///z///e", ok },
           { cf::method::get, "/route/:with/a/lot/:of/:var", ok },
           { cf::method::get, "/route/:with/*/wildcard/*/and/**/double/*", ok },
-          { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok } }
+          { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok } },
     };
-    app.run();
+    app.forever();
+
+    auto ctx = cf::context{"/ok", cf::method::get};
+    app.get_router().dispatch(ctx);
 }

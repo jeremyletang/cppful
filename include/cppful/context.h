@@ -23,9 +23,27 @@
 #ifndef CPPFUL_CONTEXT
 #define CPPFUL_CONTEXT
 
+#include <string>
+
+#include "cppful/method.h"
+
 namespace cf {
 
-struct context {};
+struct context {
+    std::string path;
+    cf::method method;
+
+    context() = default;
+    context(context&& oth);
+    context(const context& oth);
+    context(const std::string& path, cf::method method);
+
+    ~context() = default;
+
+    context& operator=(const context& oth);
+    context& operator=(context&& oth);
+
+};
 
 }
 

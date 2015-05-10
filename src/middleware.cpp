@@ -20,23 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "cppful/route.h"
+#include "cppful/middleware.h"
 
 namespace cf {
 
-route::route(route&& oth)
+middleware::middleware(middleware&& oth)
 : method(std::move(oth.method))
 , path(std::move(oth.path))
 , handler(std::move(oth.handler))
 , middlewares(std::move(oth.middlewares)) {}
 
-route::route(const route& oth)
+middleware::middleware(const middleware& oth)
 : method(oth.method)
 , path(oth.path)
 , handler(oth.handler)
 , middlewares(std::move(middlewares)) {}
 
-route& route::operator=(const route& oth) {
+middleware& middleware::operator=(const middleware& oth) {
     if (this != &oth) {
         this->method = oth.method;
         this->path = oth.path;
@@ -46,7 +46,7 @@ route& route::operator=(const route& oth) {
     return *this;
 }
 
-route& route::operator=(route&& oth) {
+middleware& middleware::operator=(middleware&& oth) {
     if (this != &oth) {
         this->method = std::move(oth.method);
         this->path = std::move(oth.path);

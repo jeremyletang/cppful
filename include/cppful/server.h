@@ -26,7 +26,6 @@
 #include <string>
 #include <vector>
 
-#include "route.h"
 #include "router.h"
 
 namespace cf {
@@ -55,7 +54,8 @@ public:
     server& operator=(server&& oth);
     server& operator=(const server& oth);
 
-    bool run();
+    bool forever();
+    cf::router& get_router();
 };
 
 }

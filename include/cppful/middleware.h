@@ -23,4 +23,43 @@
 #ifndef CPPFUL_MIDDLEWARE
 #define CPPFUL_MIDDLEWARE
 
+#include <string>
+#include <vector>
+#include <functional>
+
+#include "method.h"
+#include "response.h"
+#include "context.h"
+
+namespace cf {
+
+struct middleware {
+    cf::method method;
+    std::string path;
+    std::function<cf::response(cf::context&)> handler;
+    std::vector<std::string> middlewares;
+
+    middleware() = delete;
+    middleware(middleware&& oth);
+    middleware(const middleware& oth);
+
+    template<typename H>
+    middleware(cf::method m, std::string path, H handler, std::vector<std::string> middlewares = {}) {
+        static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
+                      "error, middleware handler must be convertible to std::function");
+        this->method = std::move(m);
+        this->path = std::move(path);
+        this->handler = handler;
+        this->middlewares = middlewares;
+    }
+
+    ~middleware() = default;
+
+    middleware& operator=(middleware&& oth);
+    middleware& operator=(const middleware& oth);
+
+};
+
+}
+
 #endif

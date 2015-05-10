@@ -29,7 +29,7 @@
 #include <vector>
 #include <regex>
 
-#include "route.h"
+#include "middleware.h"
 #include "method.h"
 
 namespace cf {
@@ -66,7 +66,8 @@ private:
     };
 
     std::unordered_map<std::string, std::map<cf::method, route_wrapper>> routes;
-    std::vector<cf::route> init_routes;
+    std::vector<cf::middleware> init_routes;
+    // std::unordered_map<std::string, 
 
     std::string sanitize_path(std::string);
     std::pair<std::regex, std::vector<std::string>> make_route_regex(std::string path);
@@ -77,7 +78,7 @@ public:
     router() = default;
     router(router&& oth);
     router(const router& oth);
-    router(std::initializer_list<cf::route> routes);
+    router(std::initializer_list<cf::middleware> middlewares);
 
     ~router() = default;
 
