@@ -20,37 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_MIDDLEWARE
-#define CPPFUL_MIDDLEWARE
+#ifndef CPPFUL_ROUTE
+#define CPPFUL_ROUTE
 
 #include <string>
+#include <vector>
+#include <functional>
 
+#include "method.h"
+#include "response.h"
 #include "context.h"
 
 namespace cf {
 
-struct middleware {
-private:
-    std::string name;
-    std::function<void(cf::context&)> handler;
+struct route {
+    cf::method method;
+    std::string path;
+    std::function<cf::response(cf::context&)> handler;
+    std::vector<std::string> middlewares;
 
-public:
-    middleware() = default;
-    middleware(middleware&& oth);
-    middleware(const middleware& oth);
+    route() = delete;
+    route(route&& oth);
+    route(const route& oth);
 
     template<typename H>
-    middleware(std::string name, H handler) {
-        static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
-                      "error, middleware handler must be convertible to std::function");
-        this->name = std::move(name);
+    route(cf::method m, std::string path, H handler, std::vector<std::string> middlewares = {}) {
+        static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
+                      "error, route handler must be convertible to std::function");
+        this->method = std::move(m);
+        this->path = std::move(path);
         this->handler = handler;
+        this->middlewares = middlewares;
     }
 
-    ~middleware() = default;
+    ~route() = default;
 
-    middleware& operator=(middleware&& oth);
-    middleware& operator=(const middleware& oth);
+    route& operator=(route&& oth);
+    route& operator=(const route& oth);
 
 };
 

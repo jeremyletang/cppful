@@ -30,19 +30,26 @@ const std::string router::two_wildcard_regex = "[/-_a-z0-9A-Z]*";
 
 router::router(router&& oth)
 : routes(std::move(oth.routes))
-, init_routes(std::move(oth.init_routes)) {}
+, init_routes(std::move(oth.init_routes))
+, init_middlewares(std::move(oth.init_middlewares))
+, init_wrappers(std::move(oth.init_wrappers)) {}
 
 router::router(const router& oth)
 : routes(oth.routes)
-, init_routes(oth.init_routes) {}
+, init_routes(oth.init_routes)
+, init_middlewares(oth.init_middlewares)
+, init_wrappers(oth.init_wrappers) {}
 
-router::router(std::initializer_list<cf::middleware> routes)
-: init_routes(routes) {}
+router::router(std::initializer_list<cf::middleware_wrapper> wrappers)
+: init_routes({})
+, init_middlewares({})
+, init_wrappers(wrappers) {}
 
 router& router::operator=(router&& oth) {
     if (this != &oth) {
         this->routes = oth.routes;
         this->init_routes = oth.init_routes;
+        this->init_middlewares = oth.init_middlewares;
     }
     return *this;
 }
@@ -51,6 +58,7 @@ router& router::operator=(const router& oth) {
     if (this != &oth) {
         this->routes = std::move(oth.routes);
         this->init_routes = std::move(oth.init_routes);
+        this->init_middlewares = std::move(oth.init_middlewares);
     }
     return *this;
 }
@@ -87,6 +95,7 @@ std::pair<std::regex, std::vector<std::string>> router::make_route_regex(std::st
 std::vector<std::pair<std::string, cf::method>> router::validate() {
     auto dup_list = std::vector<std::pair<std::string, cf::method>>{};
 
+    this->extract_from_wrappers();
     for (auto&& e : this->init_routes) {
         auto sanitized_path = this->sanitize_path(e.path);
         auto path_regex = this->make_route_regex(sanitized_path);
@@ -123,8 +132,18 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     return true;
 }
 
+void router::extract_from_wrappers() {
+    for (auto& w : this->init_wrappers) {
+        if (w.is_route()) {
+            this->init_routes.push_back(std::move(w.unwrap_route()));
+        } else {
+            this->init_middlewares.push_back(std::move(w.unwrap_middleware()));
+        }
+    }
+}
+
 cf::response router::dispatch(cf::context& ctxt) {
-    
+
 }
 
 

@@ -29,6 +29,15 @@ void sigint_handler(int sig) {
     if (sig == SIGINT) { should_exit = true; }
 }
 
+void hello_middleware(cf::context& ctx) {
+    std::cout << "on middleware !" << std::endl;
+}
+
+void stop_middleware(cf::context& ctx) {
+    std::cout << "this middleware will stop routing !" << std::endl;
+    throw cf::stop{ { cf::status::not_implemented, cf::to_string(cf::status::not_implemented) } };
+}
+
 cf::response ok(cf::context& ctx) { return "hello world"; }
 cf::response no_content(cf::context& ctx) { return {}; }
 cf::response no_content_post(cf::context& ctx) { return {}; }
@@ -48,7 +57,9 @@ int main() {
           { cf::method::get, "////sani////ti///i///z///e", ok },
           { cf::method::get, "/route/:with/a/lot/:of/:var", ok },
           { cf::method::get, "/route/:with/*/wildcard/*/and/**/double/*", ok },
-          { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok } },
+          { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok },
+          { "hello_middleware", hello_middleware },
+          { "stop_middleware", stop_middleware } }
     };
     app.forever();
 

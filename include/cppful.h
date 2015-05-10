@@ -26,9 +26,11 @@
 #include "cppful/server.h"
 #include "cppful/router.h"
 #include "cppful/middleware.h"
+#include "cppful/middleware_wrapper.h"
 #include "cppful/context.h"
 #include "cppful/response.h"
 #include "cppful/method.h"
 #include "cppful/status.h"
+#include "cppful/stop.h"
 
 #endif

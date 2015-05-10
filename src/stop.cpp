@@ -20,40 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_MIDDLEWARE
-#define CPPFUL_MIDDLEWARE
-
-#include <string>
-
-#include "context.h"
+#include "cppful/stop.h"
 
 namespace cf {
 
-struct middleware {
-private:
-    std::string name;
-    std::function<void(cf::context&)> handler;
-
-public:
-    middleware() = default;
-    middleware(middleware&& oth);
-    middleware(const middleware& oth);
-
-    template<typename H>
-    middleware(std::string name, H handler) {
-        static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
-                      "error, middleware handler must be convertible to std::function");
-        this->name = std::move(name);
-        this->handler = handler;
-    }
-
-    ~middleware() = default;
-
-    middleware& operator=(middleware&& oth);
-    middleware& operator=(const middleware& oth);
-
-};
+stop::stop(cf::response response)
+: response(response) {}
 
 }
-
-#endif

@@ -20,40 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_MIDDLEWARE
-#define CPPFUL_MIDDLEWARE
-
-#include <string>
-
-#include "context.h"
+#include "cppful/route.h"
 
 namespace cf {
 
-struct middleware {
-private:
-    std::string name;
-    std::function<void(cf::context&)> handler;
+route::route(route&& oth)
+: method(std::move(oth.method))
+, path(std::move(oth.path))
+, handler(std::move(oth.handler))
+, middlewares(std::move(oth.middlewares)) {}
 
-public:
-    middleware() = default;
-    middleware(middleware&& oth);
-    middleware(const middleware& oth);
+route::route(const route& oth)
+: method(oth.method)
+, path(oth.path)
+, handler(oth.handler)
+, middlewares(std::move(middlewares)) {}
 
-    template<typename H>
-    middleware(std::string name, H handler) {
-        static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
-                      "error, middleware handler must be convertible to std::function");
-        this->name = std::move(name);
-        this->handler = handler;
+route& route::operator=(const route& oth) {
+    if (this != &oth) {
+        this->method = oth.method;
+        this->path = oth.path;
+        this->handler = oth.handler;
+        this->middlewares = oth.middlewares;
     }
-
-    ~middleware() = default;
-
-    middleware& operator=(middleware&& oth);
-    middleware& operator=(const middleware& oth);
-
-};
-
+    return *this;
 }
 
-#endif
+route& route::operator=(route&& oth) {
+    if (this != &oth) {
+        this->method = std::move(oth.method);
+        this->path = std::move(oth.path);
+        this->handler = std::move(oth.handler);
+        this->middlewares = std::move(this->middlewares);
+    }
+    return *this;
+}
+
+}

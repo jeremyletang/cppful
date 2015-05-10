@@ -20,38 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_MIDDLEWARE
-#define CPPFUL_MIDDLEWARE
+#ifndef CPPFUL_MIDDLEWARE_WRAPPER
+#define CPPFUL_MIDDLEWARE_WRAPPER
 
-#include <string>
-
-#include "context.h"
+#include "route.h"
+#include "middleware.h"
 
 namespace cf {
 
-struct middleware {
+struct middleware_wrapper {
 private:
-    std::string name;
-    std::function<void(cf::context&)> handler;
+    enum class middleware_kind { route, middleware };
+    cf::route route;
+    cf::middleware middleware;
+    middleware_kind kind;
 
 public:
-    middleware() = default;
-    middleware(middleware&& oth);
-    middleware(const middleware& oth);
-
+    middleware_wrapper() = delete;
+    // build a route
     template<typename H>
-    middleware(std::string name, H handler) {
+    middleware_wrapper(cf::method m,
+                       std::string path, H handler,
+                       std::vector<std::string> middlewares = {})
+    : route(std::move(m), std::move(path), handler, middlewares)
+    , middleware("", nullptr)
+    , kind(middleware_kind::route) {
+        static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
+                      "error, route handler must be convertible to std::function");
+    }
+    // build a middleware
+    template<typename H>
+    middleware_wrapper(std::string name, H handler)
+    : route(cf::method::unknown, "", nullptr, {})
+    , middleware(std::move(name), handler)
+    , kind(middleware_kind::middleware) {
         static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
                       "error, middleware handler must be convertible to std::function");
-        this->name = std::move(name);
-        this->handler = handler;
     }
 
-    ~middleware() = default;
+    bool is_route();
+    bool is_middleware();
+    cf::route&& unwrap_route();
+    cf::middleware&& unwrap_middleware();
 
-    middleware& operator=(middleware&& oth);
-    middleware& operator=(const middleware& oth);
-
+    ~middleware_wrapper() = default;
 };
 
 }

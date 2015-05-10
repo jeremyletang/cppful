@@ -25,33 +25,25 @@
 namespace cf {
 
 middleware::middleware(middleware&& oth)
-: method(std::move(oth.method))
-, path(std::move(oth.path))
-, handler(std::move(oth.handler))
-, middlewares(std::move(oth.middlewares)) {}
+: name(std::move(oth.name))
+, handler(std::move(oth.handler)) {}
 
 middleware::middleware(const middleware& oth)
-: method(oth.method)
-, path(oth.path)
-, handler(oth.handler)
-, middlewares(std::move(middlewares)) {}
+: name(oth.name)
+, handler(oth.handler) {}
 
-middleware& middleware::operator=(const middleware& oth) {
+middleware& middleware::operator=(middleware&& oth) {
     if (this != &oth) {
-        this->method = oth.method;
-        this->path = oth.path;
-        this->handler = oth.handler;
-        this->middlewares = oth.middlewares;
+        this->name = std::move(oth.name);
+        this->handler = std::move(oth.handler);
     }
     return *this;
 }
 
-middleware& middleware::operator=(middleware&& oth) {
+middleware& middleware::operator=(const middleware& oth) {
     if (this != &oth) {
-        this->method = std::move(oth.method);
-        this->path = std::move(oth.path);
-        this->handler = std::move(oth.handler);
-        this->middlewares = std::move(this->middlewares);
+        this->name = oth.name;
+        this->handler = oth.handler;
     }
     return *this;
 }
