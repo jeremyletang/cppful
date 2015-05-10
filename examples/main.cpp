@@ -42,6 +42,7 @@ int main() {
     auto app = cf::server {
         { { cf::method::get, "/ok", ok },
           { cf::method::get, "/no_content", no_content },
+          { cf::method::get, "/no_content", no_content },
           { cf::method::post, "/no_content", no_content_post },
           { cf::method::get, "/bad_request", bad_request },
           { cf::method::get, "/closure", [&](auto ctx){ return "closure"; } },
@@ -50,4 +51,5 @@ int main() {
           { cf::method::get, "/route/:with/*/wildcard/*/and/**/double/*", ok },
           { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok } }
     };
+    app.run();
 }

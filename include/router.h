@@ -24,11 +24,13 @@
 #define CPPFUL_ROUTER
 
 #include <unordered_map>
+#include <map>
+#include <functional>
 #include <vector>
-#include <method.h>
 #include <regex>
 
 #include "route.h"
+#include "method.h"
 
 namespace cf {
 
@@ -63,7 +65,8 @@ private:
         route_wrapper& operator=(const route_wrapper& oth);
     };
 
-    std::unordered_map<std::string, std::unordered_map<cf::method, route_wrapper>> routes;
+    std::unordered_map<std::string, std::map<cf::method, route_wrapper>> routes;
+    std::vector<cf::route> init_routes;
 
     std::string sanitize_path(std::string);
     std::pair<std::regex, std::vector<std::string>> make_route_regex(std::string path);
@@ -81,6 +84,7 @@ public:
     router& operator=(router&& oth);
     router& operator=(const router& oth);
 
+    std::vector<std::pair<std::string, cf::method>> validate();
     cf::response dispatch(cf::context& ctxt);
 
 };

@@ -38,6 +38,8 @@ private:
     unsigned int port;
     std::string mime;
 
+    void validate_routes();
+
 public:
     server() = default;
     server(server&& oth);

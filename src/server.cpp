@@ -62,9 +62,19 @@ server& server::operator=(server&& oth) {
     return *this;
 }
 
-
 bool server::run() {
+    this->validate_routes();
     return true;
+}
+
+void server::validate_routes() {
+    auto dup_list = this->router.validate();
+    if (not dup_list.empty()) {
+        for (auto e : dup_list) {
+            std::cout << "warning: multiple handler defined for path " << e.first
+            << " with method " << cf::to_string(e.second) << std::endl;
+        }
+    }
 }
 
 }

@@ -29,26 +29,20 @@ const std::string router::wildcard_regex = "[-_a-z0-9A-Z]*";
 const std::string router::two_wildcard_regex = "[/-_a-z0-9A-Z]*";
 
 router::router(router&& oth)
-: routes(std::move(oth.routes)) {}
+: routes(std::move(oth.routes))
+, init_routes(std::move(oth.init_routes)) {}
 
 router::router(const router& oth)
-: routes(oth.routes) {}
+: routes(oth.routes)
+, init_routes(oth.init_routes) {}
 
-router::router(std::initializer_list<cf::route> routes) {
-    for (auto e : routes) {
-        auto sanitized_path = this->sanitize_path(e.path);
-        auto path_regex = this->make_route_regex(sanitized_path);
-        auto rw = router::route_wrapper{ std::move(e.handler),
-                                         std::move(e.middlewares),
-                                         std::move(path_regex.first),
-                                         std::move(path_regex.second) };
-        this->insert(e.path, e.method, std::move(rw));
-    }
-}
+router::router(std::initializer_list<cf::route> routes)
+: init_routes(routes) {}
 
 router& router::operator=(router&& oth) {
     if (this != &oth) {
         this->routes = oth.routes;
+        this->init_routes = oth.init_routes;
     }
     return *this;
 }
@@ -56,6 +50,7 @@ router& router::operator=(router&& oth) {
 router& router::operator=(const router& oth) {
     if (this != &oth) {
         this->routes = std::move(oth.routes);
+        this->init_routes = std::move(oth.init_routes);
     }
     return *this;
 }
@@ -89,6 +84,23 @@ std::pair<std::regex, std::vector<std::string>> router::make_route_regex(std::st
     return std::make_pair(std::regex(path), cap);
 }
 
+std::vector<std::pair<std::string, cf::method>> router::validate() {
+    auto dup_list = std::vector<std::pair<std::string, cf::method>>{};
+
+    for (auto&& e : this->init_routes) {
+        auto sanitized_path = this->sanitize_path(e.path);
+        auto path_regex = this->make_route_regex(sanitized_path);
+        auto rw = router::route_wrapper{ std::move(e.handler),
+                                         std::move(e.middlewares),
+                                         std::move(path_regex.first),
+                                         std::move(path_regex.second) };
+        if (not this->insert(e.path, e.method, std::move(rw))) {
+            dup_list.push_back(std::make_pair(e.path, e.method));
+        }
+    }
+    return dup_list;
+}
+
 bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     auto search_path = this->routes.find(path);
     if(search_path not_eq this->routes.end()) {
@@ -102,7 +114,7 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
         }
     } else {
         // create the cf::method and route_wrapper map
-        auto route_wrapper_map = std::unordered_map<cf::method, route_wrapper>{};
+        auto route_wrapper_map = std::map<cf::method, route_wrapper>{};
         // insert current data
         route_wrapper_map.emplace(std::move(method), std::move(rw));
         // insert the map inside the routes map
