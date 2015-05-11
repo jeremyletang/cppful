@@ -20,52 +20,53 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "cppful/middleware_wrapper.h"
+#include "cppful/priv/any.h"
 
 namespace cf {
 
-middleware_wrapper::middleware_wrapper(middleware_wrapper&& oth)
-: route(std::move(oth.route))
-, middleware(std::move(oth.middleware))
-, kind(oth.kind) {}
+any::any(any&& oth)
+: value(oth.value) {
+    oth.value = nullptr;
+}
 
-middleware_wrapper::middleware_wrapper(const middleware_wrapper& oth)
-: route(oth.route)
-, middleware(oth.middleware)
-, kind(oth.kind) {}
+any::any(const any& oth)
+: value(oth.value->copy()) {}
 
-middleware_wrapper& middleware_wrapper::operator=(middleware_wrapper&& oth) {
+any::~any()
+{ if (this->value) { delete this->value; } }
+
+any& any::operator=(const any& oth) {
     if (this != &oth) {
-        this->route = std::move(oth.route);
-        this->middleware = std::move(oth.middleware);
-        this->kind = oth.kind;
+        this->clear();
+        this->value = oth.value->copy();
     }
     return *this;
 }
 
-middleware_wrapper& middleware_wrapper::operator=(const middleware_wrapper& oth) {
+any& any::operator=(any&& oth) {
     if (this != &oth) {
-        this->route = oth.route;
-        this->middleware = oth.middleware;
-        this->kind = oth.kind;
+        this->clear();
+        this->value = oth.value;
+        oth.value = nullptr;
     }
     return *this;
 }
 
-bool middleware_wrapper::is_route() {
-    return this->kind == middleware_kind::route;
+
+const std::type_info& any::type() const
+{ return this->value->type(); }
+
+void any::clear() {
+    if (this->value) {
+        delete this->value;
+        this->value = nullptr;
+    }
 }
 
-bool middleware_wrapper::is_middleware() {
-    return this->kind == middleware_kind::middleware;
-}
+bool operator==(const any& a, std::nullptr_t nullp)
+{ return a.value == nullptr; }
 
-cf::route&& middleware_wrapper::unwrap_route() {
-    return std::move(this->route);
-}
-
-cf::middleware&& middleware_wrapper::unwrap_middleware() {
-    return std::move(this->middleware);
-}
+bool operator==(std::nullptr_t nullp, const any& a)
+{ return a.value == nullptr; }
 
 }
