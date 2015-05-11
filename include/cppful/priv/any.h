@@ -100,22 +100,18 @@ public:
 
     template<typename T>
     T& ref_unwrap() {
-        if (not this->value) { throw std::runtime_error("any value is moved"); }
-        if (not this->is<T>()) { throw std::bad_cast(); }
-        auto ptr = dynamic_cast<any_impl<T>*>(this->value);
+        if (not this->value or not this->is<T>()) { throw std::bad_cast{}; }
+        auto ptr = reinterpret_cast<any_impl<T>*>(this->value);
         if (not ptr) { throw std::bad_cast(); }
-        auto& _val = ptr->get_ref();
-        return _val;
+        return ptr->get_ref();
     }
 
     template<typename T>
     T copy_unwrap() {
-        if (not this->value) { throw std::runtime_error("any value is moved"); }
-        if (not this->is<T>()) { throw std::bad_cast(); }
-        auto ptr = dynamic_cast<any_impl<T>*>(this->value);
+        if (not this->value or not this->is<T>()) { throw std::bad_cast{}; }
+        auto ptr = reinterpret_cast<any_impl<T>*>(this->value);
         if (not ptr) { throw std::bad_cast(); }
-        auto _val = ptr->get_copy();
-        return _val;
+        return ptr->get_copy();
     }
 
     friend bool operator==(const any& a, std::nullptr_t nullp);
