@@ -53,7 +53,7 @@ public:
 
     template<typename T>
     bool exist() noexcept {
-        auto& e = this->map.find(std::type_index(typeid(T)));
+        const auto& e = this->map.find(std::type_index(typeid(T)));
         return e not_eq this->map.end();
     }
 
@@ -83,7 +83,16 @@ public:
         if (e == this->map.end()) {
             throw cf::nullopt{};
         }
-        return (*e).second.ref_unwrap<T>();
+        return (*e).second.unwrap_ref<T>();
+    }
+
+    template<typename T>
+    T& get_copy() {
+        auto e = this->map.find(std::type_index(typeid(T)));
+        if (e == this->map.end()) {
+            throw cf::nullopt{};
+        }
+        return (*e).second.unwrap_copy<T>();
     }
 
 };

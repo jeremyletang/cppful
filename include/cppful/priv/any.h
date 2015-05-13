@@ -98,7 +98,7 @@ public:
     void clear();
 
     template<typename T>
-    T& ref_unwrap() {
+    T& unwrap_ref() {
         if (not this->value or not this->is<T>()) { throw std::bad_cast{}; }
         auto ptr = reinterpret_cast<any_impl<T>*>(this->value);
         if (not ptr) { throw std::bad_cast(); }
@@ -106,7 +106,7 @@ public:
     }
 
     template<typename T>
-    T copy_unwrap() {
+    T unwrap_copy() {
         if (not this->value or not this->is<T>()) { throw std::bad_cast{}; }
         auto ptr = reinterpret_cast<any_impl<T>*>(this->value);
         if (not ptr) { throw std::bad_cast(); }
