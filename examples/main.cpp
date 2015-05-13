@@ -78,7 +78,12 @@ int main() {
     std::cout << *(map.get<std::shared_ptr<std::string>>()) << std::endl;
 
     auto int_val = 42;
-    auto int_ref = cf::orm::value(int_val);
+    cf::orm::null<int> null_int_val = 45;
+    auto int_ref = cf::orm::field(int_val);
+    auto null_int_ref = cf::orm::field(null_int_val);
     int_ref.get<int>() = 2500;
+    null_int_ref.get<cf::orm::null<int>>() = -42;
     std::cout << int_ref.get<int>() << std::endl;
+    std::cout << *null_int_ref.get<cf::orm::null<int>>() << std::endl;
+
 }

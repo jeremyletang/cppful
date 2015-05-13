@@ -20,40 +20,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_ORM_SQL_VALUE
-#define CPPFUL_ORM_SQL_VALUE
+#include "cppful/orm/field.h"
 
-#include "type.h"
-#include "../priv/any.h"
+#include <functional>
 
 namespace cf {
 
 namespace orm {
 
-struct value {
-private:
-    cf::any val;
-    cf::type ty;
+field::field(field&& oth)
+: val(std::move(oth.val))
+, ty(oth.ty) {}
 
-public:
-    value() = delete;
-    value(value&& oth);
-    value(const value& oth);
-    value(bool &val, cf::type ty = cf::type::boolean);
-    value(int &val, cf::type ty = cf::type::integer);
-    ~value() = default;
+field::field(const field& oth)
+: val(oth.val)
+, ty(oth.ty) {}
 
-    value& operator=(value&& oth);
-    value& operator=(const value& oth);
+field& field::operator=(field&& oth) {
+    if (this != &oth) {
+        this->val = std::move(oth.val);
+        this->ty = oth.ty;
+    }
+    return *this;
+}
 
-    cf::type type() const;
-    template<typename T>
-    T& get();
+field& field::operator=(const field& oth) {
+    if (this != &oth) {
+        this->val = oth.val;
+        this->ty = oth.ty;
+    }
+    return *this;
+}
 
-};
+field::field(bool& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::type::boolean) {}
 
+field::field(cf::orm::null<bool>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::type::boolean) {}
+
+field::field(int& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::type::integer) {}
+
+field::field(cf::orm::null<int>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::type::integer) {}
+
+cf::type field::type() const {
+    return this->ty;
 }
 
 }
 
-#endif
+}

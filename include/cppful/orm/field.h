@@ -20,22 +20,56 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
+#ifndef CPPFUL_ORM_SQL_FIELD
+#define CPPFUL_ORM_SQL_FIELD
 
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
-#include "cppful/orm/field.h"
-#include "cppful/orm/type.h"
-#include "cppful/orm/null.h"
+#include <string>
+#include <functional>
+
+#include "type.h"
+#include "null.h"
+#include "../priv/any.h"
+
+namespace cf {
+
+namespace orm {
+
+struct field {
+private:
+    cf::any val;
+    std::string name;
+    cf::type ty;
+
+    bool nullable;
+    bool auto_increment;
+    bool id;
+
+public:
+    field() = delete;
+
+    field(field&& oth);
+    field(const field& oth);
+
+    field(bool& val, std::string name = "");
+    field(cf::orm::null<bool>& val, std::string name = "");
+    field(int& val, std::string name = "");
+    field(cf::orm::null<int>& val, std::string name = "");
+
+    ~field() = default;
+
+    field& operator=(field&& oth);
+    field& operator=(const field& oth);
+
+    cf::type type() const;
+
+    template<typename T>
+    T& get()
+    { return this->val.unwrap_ref<std::reference_wrapper<T>>().get(); }
+
+};
+
+}
+
+}
 
 #endif

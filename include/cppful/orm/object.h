@@ -20,60 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "cppful/orm/value.h"
+#ifndef CPPFUL_OBJECT
+#define CPPFUL_OBJECT
 
-#include <functional>
+#include <unordered_map>
+
+#include <value.h>
 
 namespace cf {
 
 namespace orm {
 
-value::value(value&& oth)
-: val(std::move(oth.val))
-, ty(oth.ty) {}
+template <typename T>
+struct object<> {
+protected:
+    std::unordered_map<std::string, cf::orm::value> values;
 
-value::value(const value& oth)
-: val(oth.val)
-, ty(oth.ty) {}
-
-value& value::operator=(value&& oth) {
-    if (this != &oth) {
-        this->val = std::move(oth.val);
-        this->ty = oth.ty;
-    }
-    return *this;
-}
-
-value& value::operator=(const value& oth) {
-    if (this != &oth) {
-        this->val = oth.val;
-        this->ty = oth.ty;
-    }
-    return *this;
-}
-
-value::value(bool &val, cf::type ty)
-: val(any(std::ref(val)))
-, ty(ty) {}
-
-value::value(int &val, cf::type ty)
-: val(any(std::ref(val)))
-, ty(ty) {}
-
-cf::type value::type() const {
-    return this->ty;
-}
-
-template<>
-int& value::get() {
-    return this->val.unwrap_ref<std::reference_wrapper<int>>().get();
-}
-
-template<>
-bool& value::get() {
-    return this->val.unwrap_ref<std::reference_wrapper<bool>>().get();
-}
+public:
+    virtual ~object {}
+    bool create();
+    bool read();
+    bool update();
+    bool drop();
+};
 
 }
 
 }
+
+#endif
