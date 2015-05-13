@@ -38,10 +38,11 @@ namespace cf {
 
 struct router {
 private:
-    const std::regex find_var_regex = std::regex(":[-_a-zA-Z0-9]*");
-    const std::regex find_wildcard_regex = std::regex("(\\*)");
-    const std::regex find_two_wildcard_regex = std::regex("(\\*\\*)");
-    const std::regex find_placeholder_regex = std::regex("(__TWO_WILDCARD_PLACEHOLDER__)");
+    static const std::regex find_var_regex;
+    static const std::regex find_wildcard_regex;
+    static const std::regex find_two_wildcard_regex;
+    static const std::regex find_placeholder_regex;
+    static const std::regex sanitize_regex;
     static const std::string var_regex;
     static const std::string wildcard_regex;
     static const std::string two_wildcard_regex;

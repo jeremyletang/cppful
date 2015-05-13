@@ -22,6 +22,7 @@
 
 #include <cppful.h>
 #include <csignal>
+#include <memory>
 
 bool should_exit = false;
 
@@ -58,6 +59,7 @@ int main() {
           { cf::method::get, "/route/:with/a/lot/:of/:var", ok },
           { cf::method::get, "/route/:with/*/wildcard/*/and/**/double/*", ok },
           { cf::method::get, "/route/:with/:var/and/some/*/wildcards/*", ok },
+          { cf::method::put, "/route/:with/:var/and/some/*/wildcards/*", ok },
           { "hello_middleware", hello_middleware },
           { "stop_middleware", stop_middleware } }
     };
@@ -65,4 +67,13 @@ int main() {
 
     auto ctx = cf::context{"/ok", cf::method::get};
     app.get_router().dispatch(ctx);
+
+    auto map = cf::any_map{};
+    map.insert(std::move(42));
+    map.insert(std::move(std::string("hello world move !")));
+    map.insert(std::string("hello world const & !"));
+    map.insert(std::make_shared<std::string>(std::string("hello world shared !")));
+    std::cout << map.get<int>() << std::endl;
+    std::cout << map.get<std::string>() << std::endl;
+    std::cout << *(map.get<std::shared_ptr<std::string>>()) << std::endl;
 }

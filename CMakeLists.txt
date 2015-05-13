@@ -32,6 +32,11 @@ add_executable (simple_server examples/main.cpp)
 
 target_link_libraries (simple_server cppful)
 
+set_target_properties(cppful
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
+)
+
 set_target_properties(simple_server
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"

@@ -28,6 +28,12 @@ const std::string router::var_regex = "([-_a-zA-Z0-9]*)";
 const std::string router::wildcard_regex = "[-_a-z0-9A-Z]*";
 const std::string router::two_wildcard_regex = "[/-_a-z0-9A-Z]*";
 
+const std::regex router::find_var_regex = std::regex(":[-_a-zA-Z0-9]*");
+const std::regex router::find_wildcard_regex = std::regex("(\\*)");
+const std::regex router::find_two_wildcard_regex = std::regex("(\\*\\*)");
+const std::regex router::find_placeholder_regex = std::regex("(__TWO_WILDCARD_PLACEHOLDER__)");
+const std::regex router::sanitize_regex = std::regex("//+");
+
 router::router(router&& oth)
 : routes(std::move(oth.routes))
 , init_routes(std::move(oth.init_routes))
@@ -64,8 +70,7 @@ router& router::operator=(const router& oth) {
 }
 
 std::string router::sanitize_path(std::string path) {
-    auto re = std::regex("//+");
-    auto sanitized = std::regex_replace(path, re, "/");
+    auto sanitized = std::regex_replace(path, this->sanitize_regex, "/");
     if (not sanitized.empty() && sanitized.back() not_eq '/') {
         sanitized.push_back('/');
     }

@@ -55,10 +55,8 @@ private:
 
         ~any_impl() = default;
 
-        base_any* copy() const {
-            auto c = new any_impl<T>(value);
-            return c;
-        }
+        base_any* copy() const
+        { return new any_impl<T>(value); }
 
         const std::type_info& type() const
         { return this->ty; }
@@ -68,6 +66,7 @@ private:
 
         T get_copy()
         { return this->value; }
+
     };
 
     base_any* value = nullptr;

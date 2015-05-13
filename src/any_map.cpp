@@ -20,52 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "cppful/priv/any.h"
+#include "cppful/any_map.h"
 
 namespace cf {
 
-any::any(any&& oth)
-: value(oth.value)
-{ oth.value = nullptr; }
+any_map::any_map(any_map&& oth)
+: map(std::move(oth.map)) {}
 
-any::any(const any& oth)
-: value(oth.value->copy()) {}
+any_map::any_map(const any_map& oth)
+: map(oth.map) {}
 
-any::~any()
-{ if (this->value) { delete this->value; } }
+any_map::any_map(std::initializer_list<any> init) {}
 
-any& any::operator=(const any& oth) {
+any_map& any_map::operator=(any_map&& oth) {
     if (this != &oth) {
-        this->clear();
-        this->value = oth.value->copy();
+        this->map = std::move(oth.map);
     }
     return *this;
 }
 
-any& any::operator=(any&& oth) {
+any_map& any_map::operator=(const any_map& oth) {
     if (this != &oth) {
-        this->clear();
-        this->value = oth.value;
-        oth.value = nullptr;
+        this->map = oth.map;
     }
     return *this;
 }
 
-
-const std::type_info& any::type() const
-{ return this->value->type(); }
-
-void any::clear() {
-    if (this->value) {
-        delete this->value;
-        this->value = nullptr;
-    }
+bool any_map::empty() noexcept {
+    return this->map.empty();
 }
 
-bool operator==(const any& a, std::nullptr_t nullp)
-{ return a.value == nullptr; }
+void any_map::clear() noexcept {
+    this->map.clear();
+}
 
-bool operator==(std::nullptr_t nullp, const any& a)
-{ return a.value == nullptr; }
 
 }

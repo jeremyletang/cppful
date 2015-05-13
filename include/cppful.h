@@ -23,13 +23,15 @@
 #ifndef CPPFUL_CPPFUL
 #define CPPFUL_CPPFUL
 
-#include "cppful/server.h"
-#include "cppful/router.h"
+#include "cppful/any_map.h"
+#include "cppful/context.h"
+#include "cppful/method.h"
 #include "cppful/middleware.h"
 #include "cppful/middleware_wrapper.h"
-#include "cppful/context.h"
 #include "cppful/response.h"
-#include "cppful/method.h"
+#include "cppful/route.h"
+#include "cppful/router.h"
+#include "cppful/server.h"
 #include "cppful/status.h"
 #include "cppful/stop.h"
 
