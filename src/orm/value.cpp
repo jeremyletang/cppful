@@ -20,21 +20,60 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
-
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
 #include "cppful/orm/value.h"
-#include "cppful/orm/type.h"
 
-#endif
+#include <functional>
+
+namespace cf {
+
+namespace orm {
+
+value::value(value&& oth)
+: val(std::move(oth.val))
+, ty(oth.ty) {}
+
+value::value(const value& oth)
+: val(oth.val)
+, ty(oth.ty) {}
+
+value& value::operator=(value&& oth) {
+    if (this != &oth) {
+        this->val = std::move(oth.val);
+        this->ty = oth.ty;
+    }
+    return *this;
+}
+
+value& value::operator=(const value& oth) {
+    if (this != &oth) {
+        this->val = oth.val;
+        this->ty = oth.ty;
+    }
+    return *this;
+}
+
+value::value(bool &val, cf::type ty)
+: val(any(std::ref(val)))
+, ty(ty) {}
+
+value::value(int &val, cf::type ty)
+: val(any(std::ref(val)))
+, ty(ty) {}
+
+cf::type value::type() const {
+    return this->ty;
+}
+
+template<>
+int& value::get() {
+    return this->val.unwrap_ref<std::reference_wrapper<int>>().get();
+}
+
+template<>
+bool& value::get() {
+    return this->val.unwrap_ref<std::reference_wrapper<bool>>().get();
+}
+
+}
+
+}

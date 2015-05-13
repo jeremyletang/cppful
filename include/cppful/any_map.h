@@ -48,11 +48,11 @@ public:
 
     ~any_map() = default;
 
-    bool empty() noexcept;
+    bool empty() const noexcept;
     void clear() noexcept;
 
     template<typename T>
-    bool exist() noexcept {
+    bool exist() const noexcept {
         const auto& e = this->map.find(std::type_index(typeid(T)));
         return e not_eq this->map.end();
     }

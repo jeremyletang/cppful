@@ -46,7 +46,7 @@ any_map& any_map::operator=(const any_map& oth) {
     return *this;
 }
 
-bool any_map::empty() noexcept {
+bool any_map::empty() const noexcept {
     return this->map.empty();
 }
 

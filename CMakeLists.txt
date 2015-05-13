@@ -11,7 +11,7 @@ project (cppful CXX)
 file (GLOB headers "*.h")
 file (GLOB sources "*.cpp")
 
-set (DIRS "src" "src/priv")
+set (DIRS "src" "src/priv" "src/orm")
 
 foreach (dir ${DIRS})
    file (GLOB h_${dir} "${dir}/*.h")

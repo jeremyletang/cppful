@@ -65,8 +65,8 @@ public:
     middleware_wrapper& operator=(middleware_wrapper&& oth);
     middleware_wrapper& operator=(const middleware_wrapper& oth);
 
-    bool is_route();
-    bool is_middleware();
+    bool is_route() const;
+    bool is_middleware() const ;
     cf::route&& unwrap_route();
     cf::middleware&& unwrap_middleware();
 

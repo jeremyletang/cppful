@@ -20,21 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
+#ifndef CPPFUL_ORM_SQL_VALUE
+#define CPPFUL_ORM_SQL_VALUE
 
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
-#include "cppful/orm/value.h"
-#include "cppful/orm/type.h"
+#include "type.h"
+#include "../priv/any.h"
+
+namespace cf {
+
+namespace orm {
+
+struct value {
+private:
+    cf::any val;
+    cf::type ty;
+
+public:
+    value() = delete;
+    value(value&& oth);
+    value(const value& oth);
+    value(bool &val, cf::type ty = cf::type::boolean);
+    value(int &val, cf::type ty = cf::type::integer);
+    ~value() = default;
+
+    value& operator=(value&& oth);
+    value& operator=(const value& oth);
+
+    cf::type type() const;
+    template<typename T>
+    T& get();
+
+};
+
+}
+
+}
 
 #endif

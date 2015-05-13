@@ -20,21 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
+#ifndef CPPFUL_ORM_TYPE
+#define CPPFUL_ORM_TYPE
 
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
-#include "cppful/orm/value.h"
-#include "cppful/orm/type.h"
+#include <string>
+#include <iostream>
+
+namespace cf {
+
+enum class type {
+    character,
+    varchar,
+    binary,
+    boolean,
+    varbinary,
+    smallint,
+    integer,
+    decimal,
+    numeric,
+    float_,
+    real,
+    double_precision,
+    date,
+    time,
+    timestamp,
+    interval,
+    array,
+    multiset,
+    xml
+};
+
+std::string to_string(cf::type t);
+std::ostream &operator << (std::ostream &os, cf::type t);
+
+}
 
 #endif

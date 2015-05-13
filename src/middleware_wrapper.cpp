@@ -52,11 +52,11 @@ middleware_wrapper& middleware_wrapper::operator=(const middleware_wrapper& oth)
     return *this;
 }
 
-bool middleware_wrapper::is_route() {
+bool middleware_wrapper::is_route() const {
     return this->kind == middleware_kind::route;
 }
 
-bool middleware_wrapper::is_middleware() {
+bool middleware_wrapper::is_middleware() const {
     return this->kind == middleware_kind::middleware;
 }
 

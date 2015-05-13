@@ -20,21 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
-
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
-#include "cppful/orm/value.h"
 #include "cppful/orm/type.h"
 
-#endif
+namespace cf {
+
+std::string to_string(cf::type m) {
+    switch (m) {
+        case cf::type::character: return "character";
+        case cf::type::varchar: return "varchar";
+        case cf::type::binary: return "binary";
+        case cf::type::boolean: return "boolean";
+        case cf::type::varbinary: return "varbinary";
+        case cf::type::smallint: return "smallint";
+        case cf::type::integer: return "integer";
+        case cf::type::decimal: return "decimal";
+        case cf::type::float_: return "float";
+        case cf::type::real: return "real";
+        case cf::type::double_precision: return "double_precision";
+        case cf::type::date: return "date";
+        case cf::type::time: return "timestamp";
+        case cf::type::array: return "interval";
+        case cf::type::multiset: return "multiset";
+        case cf::type::xml: return "xml";
+        default: return "unknown";
+    }
+    return "";
+}
+
+std::ostream &operator<<(std::ostream &os, cf::type m) {
+    os << cf::to_string(m);
+    return os;
+}
+
+}
