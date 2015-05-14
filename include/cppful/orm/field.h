@@ -28,6 +28,7 @@
 
 #include "type.h"
 #include "null.h"
+#include "string.h"
 #include "../priv/any.h"
 
 namespace cf {
@@ -38,8 +39,7 @@ struct field {
 private:
     cf::any val;
     std::string name;
-    const std::string type_name;
-    cf::type ty;
+    cf::orm::type ty;
 
     bool is_unsigned;
     bool nullable;
@@ -52,25 +52,25 @@ public:
     field(field&& oth);
     field(const field& oth);
 
-    field(bool& val, std::string name = "");
-    field(cf::orm::null<bool>& val, std::string name = "");
+    field(bool& val, std::string name);
+    field(cf::orm::null<bool>& val, std::string name);
 
-    field(char& val, std::string name = "");
-    field(cf::orm::null<char>& val, std::string name = "");
-    field(unsigned char& val, std::string name = "");
-    field(cf::orm::null<unsigned char>& val, std::string name = "");
+    field(char& val, std::string name);
+    field(cf::orm::null<char>& val, std::string name);
+    field(unsigned char& val, std::string name);
+    field(cf::orm::null<unsigned char>& val, std::string name);
 
-    field(int& val, std::string name = "");
-    field(cf::orm::null<int>& val, std::string name = "");
-    field(unsigned int& val, std::string name = "");
-    field(cf::orm::null<unsigned int>& val, std::string name = "");
+    field(int& val, std::string name);
+    field(cf::orm::null<int>& val, std::string name);
+    field(unsigned int& val, std::string name);
+    field(cf::orm::null<unsigned int>& val, std::string name);
 
     ~field() = default;
 
     field& operator=(field&& oth);
     field& operator=(const field& oth);
 
-    cf::type type() const;
+    cf::orm::type type() const;
 
     template<typename T>
     T& get()

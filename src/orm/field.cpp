@@ -55,66 +55,65 @@ field& field::operator=(const field& oth) {
 field::field(bool& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::boolean)
+, ty(cf::orm::type::boolean)
 , is_unsigned(false) {}
 
 field::field(cf::orm::null<bool>& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::boolean)
+, ty(cf::orm::type::boolean)
 , is_unsigned(false) {}
 
 field::field(char& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::tinyint)
+, ty(cf::orm::type::tinyint)
 , is_unsigned(false) {}
 
 field::field(cf::orm::null<char>& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::tinyint)
+, ty(cf::orm::type::tinyint)
 , is_unsigned(false) {}
 
 field::field(unsigned char& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::tinyint)
+, ty(cf::orm::type::tinyint)
 , is_unsigned(true) {}
 
 field::field(cf::orm::null<unsigned char>& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::tinyint)
+, ty(cf::orm::type::tinyint)
 , is_unsigned(true) {}
 
 field::field(int& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::int_)
+, ty(cf::orm::type::int_)
 , is_unsigned(false) {}
 
 field::field(cf::orm::null<int>& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::int_)
+, ty(cf::orm::type::int_)
 , is_unsigned(false) {}
 
 field::field(unsigned int& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::int_)
+, ty(cf::orm::type::int_)
 , is_unsigned(true) {}
-
 
 field::field(cf::orm::null<unsigned int>& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
-, ty(cf::type::int_)
+, ty(cf::orm::type::int_)
 , is_unsigned(true) {}
 
 
-cf::type field::type() const
+cf::orm::type field::type() const
 { return this->ty; }
 
 }

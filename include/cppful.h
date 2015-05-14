@@ -37,5 +37,6 @@
 #include "cppful/orm/field.h"
 #include "cppful/orm/type.h"
 #include "cppful/orm/null.h"
+#include "cppful/orm/string.h"
 
 #endif

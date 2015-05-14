@@ -24,45 +24,45 @@
 
 namespace cf {
 
-std::string to_string(cf::type m) {
+std::string to_string(cf::orm::type m) {
     switch (m) {
-        case cf::type::tinyint: return "TNYINT";
-        case cf::type::smallint: return "SMALLINT";
-        case cf::type::mediumint: return "MEDIUMINT";
-        case cf::type::int_: return "INT";
-        case cf::type::bigint: return "BIGINT";
-        case cf::type::decimal: return "DECIMAL";
-        case cf::type::float_: return "FLOAT";
-        case cf::type::double_: return "DOUBLE";
-        case cf::type::real: return "REAL";
-        case cf::type::bit: return "BIT";
-        case cf::type::boolean: return "BOOLEAN";
-        case cf::type::serial: return "SERIAL";
-        case cf::type::date: return "DATE";
-        case cf::type::datetime: return "DATETIME";
-        case cf::type::timestamp: return "TIMESTAMP";
-        case cf::type::time: return "TIME";
-        case cf::type::year: return "YEAR";
-        case cf::type::char_: return "CHAR";
-        case cf::type::varchar: return "VARCHAR";
-        case cf::type::tinytext: return "TINYTEXT";
-        case cf::type::text: return "TEXT";
-        case cf::type::mediumtext: return "MEDIUMTEXT";
-        case cf::type::longtext: return "LONGTEXT";
-        case cf::type::binary: return "BINARY";
-        case cf::type::varbinary: return "VARBINARY";
-        case cf::type::tinyblob: return "TINYBLOB";
-        case cf::type::mediumblob: return "MEDIUMBLOB";
-        case cf::type::blob: return "BLOB";
-        case cf::type::longblob: return "LONGBLOB";
-        case cf::type::enum_: return "ENUM";
-        case cf::type::set: return "SET";
+        case cf::orm::type::tinyint: return "TNYINT";
+        case cf::orm::type::smallint: return "SMALLINT";
+        case cf::orm::type::mediumint: return "MEDIUMINT";
+        case cf::orm::type::int_: return "INT";
+        case cf::orm::type::bigint: return "BIGINT";
+        case cf::orm::type::decimal: return "DECIMAL";
+        case cf::orm::type::float_: return "FLOAT";
+        case cf::orm::type::double_: return "DOUBLE";
+        case cf::orm::type::real: return "REAL";
+        case cf::orm::type::bit: return "BIT";
+        case cf::orm::type::boolean: return "BOOLEAN";
+        case cf::orm::type::serial: return "SERIAL";
+        case cf::orm::type::date: return "DATE";
+        case cf::orm::type::datetime: return "DATETIME";
+        case cf::orm::type::timestamp: return "TIMESTAMP";
+        case cf::orm::type::time: return "TIME";
+        case cf::orm::type::year: return "YEAR";
+        case cf::orm::type::char_: return "CHAR";
+        case cf::orm::type::varchar: return "VARCHAR";
+        case cf::orm::type::tinytext: return "TINYTEXT";
+        case cf::orm::type::text: return "TEXT";
+        case cf::orm::type::mediumtext: return "MEDIUMTEXT";
+        case cf::orm::type::longtext: return "LONGTEXT";
+        case cf::orm::type::binary: return "BINARY";
+        case cf::orm::type::varbinary: return "VARBINARY";
+        case cf::orm::type::tinyblob: return "TINYBLOB";
+        case cf::orm::type::mediumblob: return "MEDIUMBLOB";
+        case cf::orm::type::blob: return "BLOB";
+        case cf::orm::type::longblob: return "LONGBLOB";
+        case cf::orm::type::enum_: return "ENUM";
+        case cf::orm::type::set: return "SET";
         default: return "UNKNWON";
     }
     return "";
 }
 
-std::ostream &operator<<(std::ostream &os, cf::type m) {
+std::ostream &operator<<(std::ostream &os, cf::orm::type m) {
     os << cf::to_string(m);
     return os;
 }

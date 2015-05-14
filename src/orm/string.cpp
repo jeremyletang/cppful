@@ -20,58 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_ORM_TYPE
-#define CPPFUL_ORM_TYPE
-
-#include <string>
-#include <iostream>
+#include "cppful/orm/string.h"
 
 namespace cf {
 
-namespace orm {
-
-enum class type {
-    // numeric
-    tinyint, // char
-    smallint, // short
-    mediumint, // 3bytes
-    int_, // int
-    bigint, // long
-    decimal,
-    float_, // float
-    double_, // double
-    real, // double
-    bit,
-    boolean, // bool
-    serial,
-    // dates
-    date,
-    datetime,
-    timestamp,
-    time,
-    year,
-    // strings
-    char_,
-    varchar,
-    tinytext,
-    text,
-    mediumtext,
-    longtext,
-    binary,
-    varbinary,
-    tinyblob,
-    mediumblob,
-    blob,
-    longblob,
-    enum_,
-    set
-};
-
+std::string to_string(cf::orm::string_kind m) {
+    switch (m) {
+        case cf::orm::string_kind::char_ : return "char";
+        case cf::orm::string_kind::varchar : return "varchar";
+        case cf::orm::string_kind::tinytext : return "tinytext";
+        case cf::orm::string_kind::text : return "text";
+        case cf::orm::string_kind::mediumtext : return "mediumtext";
+        case cf::orm::string_kind::longtext : return "longtext";
+        case cf::orm::string_kind::binary : return "binary";
+        case cf::orm::string_kind::varbinary : return "varbinary";
+        default: return "unreachable";
+    }
+    return "";
 }
 
-std::string to_string(cf::orm::type t);
-std::ostream &operator << (std::ostream &os, cf::orm::type t);
-
+std::ostream &operator<<(std::ostream &os, cf::orm::string_kind m) {
+    os << cf::to_string(m);
+    return os;
 }
 
-#endif
+}
