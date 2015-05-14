@@ -27,4 +27,7 @@ namespace cf {
 stop::stop(cf::response response)
 : response(response) {}
 
+stop::stop(cf::status status, const std::string& body)
+: response({ status, body }) {}
+
 }

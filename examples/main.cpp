@@ -38,7 +38,7 @@ void hello_middleware(cf::context& ctx) {
 
 void stop_middleware(cf::context& ctx) {
     std::cout << "this middleware will stop routing !" << std::endl;
-    throw cf::stop{ { cf::status::not_implemented, cf::to_string(cf::status::not_implemented) } };
+    throw cf::stop{ cf::status::not_implemented, cf::to_string(cf::status::not_implemented) };
 }
 
 cf::response ok(cf::context& ctx) { return "hello"; }

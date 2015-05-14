@@ -26,6 +26,7 @@
 #include <exception>
 
 #include "response.h"
+#include "status.h"
 
 namespace cf {
 
@@ -36,6 +37,7 @@ private:
 public:
     stop() = delete;
     stop(cf::response response);
+    stop(cf::status status, const std::string& body);
     ~stop() = default;
 };
 
