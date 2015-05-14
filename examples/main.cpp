@@ -49,6 +49,19 @@ cf::response bad_request(cf::context& ctx) {
 }
 
 struct person : public cf::orm::object<person> {
+    int id;
+    cf::orm::tinytext name;
+    unsigned int age;
+
+    // here we initialize the map with the struct members
+    person() {
+        this->fields = {
+            { "id", { this->id } },
+            { "name", { this->name } },
+            { "age", { this->age} }
+        };
+    }
+    ~person() = default;
 
 };
 
@@ -85,8 +98,8 @@ int main() {
 
     auto int_val = 42;
     cf::orm::null<int> null_int_val = 45;
-    auto int_ref = cf::orm::field { int_val, "int_val" };
-    auto null_int_ref = cf::orm::field { null_int_val, "null_int_val" };
+    auto int_ref = cf::orm::field { int_val };
+    auto null_int_ref = cf::orm::field { null_int_val };
     int_ref.get<int>() = 2500;
     null_int_ref.get<cf::orm::null<int>>() = -42;
     std::cout << int_ref.get<int>() << std::endl;
@@ -97,7 +110,7 @@ int main() {
     auto varchar = cf::orm::varchar { "Goodbye from a string of type: "};
     std::cout << char_ << cf::to_string(char_.kind()) << std::endl;
     std::cout << varchar << cf::to_string(varchar.kind()) << std::endl;
-    auto varchar_ref = cf::orm::field { varchar, "varchar_ref" };
+    auto varchar_ref = cf::orm::field { varchar };
     varchar_ref.get<cf::orm::varchar>() = "this string has been updated !";
     std::cout << varchar_ref.get<cf::orm::varchar>() << " string type: " << cf::to_string(varchar_ref.type()) << std::endl;
 }

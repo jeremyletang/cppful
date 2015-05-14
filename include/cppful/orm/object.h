@@ -23,7 +23,7 @@
 #ifndef CPPFUL_OBJECT
 #define CPPFUL_OBJECT
 
-#include <unordered_map>
+#include <map>
 #include <mutex>
 
 #include "field.h"
@@ -35,7 +35,7 @@ namespace orm {
 template <typename T>
 struct object {
 protected:
-    std::unordered_map<std::string, cf::orm::field> fields;
+    std::map<std::string, cf::orm::field> fields;
     static std::mutex mtx;
 
 private:

@@ -38,7 +38,6 @@ namespace orm {
 struct field {
 private:
     cf::any val;
-    std::string name;
     cf::orm::type ty;
 
     bool is_unsigned;
@@ -52,39 +51,38 @@ public:
     field(field&& oth);
     field(const field& oth);
 
-    field(bool& val, std::string name);
-    field(cf::orm::null<bool>& val, std::string name);
+    field(bool& val);
+    field(cf::orm::null<bool>& val);
 
-    field(char& val, std::string name);
-    field(cf::orm::null<char>& val, std::string name);
-    field(unsigned char& val, std::string name);
-    field(cf::orm::null<unsigned char>& val, std::string name);
+    field(char& val);
+    field(cf::orm::null<char>& val);
+    field(unsigned char& val);
+    field(cf::orm::null<unsigned char>& val);
 
-    field(short& val, std::string name);
-    field(cf::orm::null<short>& val, std::string name);
-    field(unsigned short& val, std::string name);
-    field(cf::orm::null<unsigned short>& val, std::string name);
+    field(short& val);
+    field(cf::orm::null<short>& val);
+    field(unsigned short& val);
+    field(cf::orm::null<unsigned short>& val);
 
-    field(int& val, std::string name);
-    field(cf::orm::null<int>& val, std::string name);
-    field(unsigned int& val, std::string name);
-    field(cf::orm::null<unsigned int>& val, std::string name);
+    field(int& val);
+    field(cf::orm::null<int>& val);
+    field(unsigned int& val);
+    field(cf::orm::null<unsigned int>& val);
 
-    field(long& val, std::string name);
-    field(cf::orm::null<long>& val, std::string name);
-    field(unsigned long& val, std::string name);
-    field(cf::orm::null<unsigned long>& val, std::string name);
+    field(long& val);
+    field(cf::orm::null<long>& val);
+    field(unsigned long& val);
+    field(cf::orm::null<unsigned long>& val);
 
-    field(float& val, std::string name);
-    field(cf::orm::null<float>& val, std::string name);
+    field(float& val);
+    field(cf::orm::null<float>& val);
 
-    field(double& val, std::string name);
-    field(cf::orm::null<double>& val, std::string name);
+    field(double& val);
+    field(cf::orm::null<double>& val);
 
     template<cf::orm::string_kind T>
-    field(cf::orm::string<T>& val, std::string name)
+    field(cf::orm::string<T>& val)
     : val(any(std::ref(val)))
-    , name(name)
     , ty(cf::orm::string_kind_to_orm_type(val.kind()))
     , is_unsigned(false) {}
 
