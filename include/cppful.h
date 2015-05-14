@@ -38,5 +38,6 @@
 #include "cppful/orm/type.h"
 #include "cppful/orm/null.h"
 #include "cppful/orm/string.h"
+#include "cppful/orm/object.h"
 
 #endif

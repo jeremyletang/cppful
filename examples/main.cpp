@@ -48,6 +48,10 @@ cf::response bad_request(cf::context& ctx) {
     return { cf::status::bad_request, cf::to_string(cf::status::bad_request) };
 }
 
+struct person : public cf::orm::object<person> {
+
+};
+
 int main() {
     std::signal(SIGINT, sigint_handler);
     auto app = cf::server {

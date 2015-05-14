@@ -24,28 +24,32 @@
 #define CPPFUL_OBJECT
 
 #include <unordered_map>
+#include <mutex>
 
-#include <value.h>
+#include "field.h"
 
 namespace cf {
 
 namespace orm {
 
 template <typename T>
-struct object<> {
+struct object {
 protected:
     std::unordered_map<std::string, cf::orm::field> fields;
+    static std::mutex mtx;
 
 private:
     void ensure_scheme();
 
 public:
-    virtual ~object {}
-    bool create();
-    bool read();
-    bool update();
-    bool drop();
+    virtual ~object() {}
+    bool create() { return true; }
+    bool read() { return true; }
+    bool update() { return true; }
+    bool drop() { return true; }
 };
+
+template <typename T> std::mutex object<T>::mtx;
 
 }
 
