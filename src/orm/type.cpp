@@ -26,23 +26,38 @@ namespace cf {
 
 std::string to_string(cf::type m) {
     switch (m) {
-        case cf::type::character: return "character";
-        case cf::type::varchar: return "varchar";
-        case cf::type::binary: return "binary";
-        case cf::type::boolean: return "boolean";
-        case cf::type::varbinary: return "varbinary";
-        case cf::type::smallint: return "smallint";
-        case cf::type::integer: return "integer";
-        case cf::type::decimal: return "decimal";
-        case cf::type::float_: return "float";
-        case cf::type::real: return "real";
-        case cf::type::double_precision: return "double_precision";
-        case cf::type::date: return "date";
-        case cf::type::time: return "timestamp";
-        case cf::type::array: return "interval";
-        case cf::type::multiset: return "multiset";
-        case cf::type::xml: return "xml";
-        default: return "unknown";
+        case cf::type::tinyint: return "TNYINT";
+        case cf::type::smallint: return "SMALLINT";
+        case cf::type::mediumint: return "MEDIUMINT";
+        case cf::type::int_: return "INT";
+        case cf::type::bigint: return "BIGINT";
+        case cf::type::decimal: return "DECIMAL";
+        case cf::type::float_: return "FLOAT";
+        case cf::type::double_: return "DOUBLE";
+        case cf::type::real: return "REAL";
+        case cf::type::bit: return "BIT";
+        case cf::type::boolean: return "BOOLEAN";
+        case cf::type::serial: return "SERIAL";
+        case cf::type::date: return "DATE";
+        case cf::type::datetime: return "DATETIME";
+        case cf::type::timestamp: return "TIMESTAMP";
+        case cf::type::time: return "TIME";
+        case cf::type::year: return "YEAR";
+        case cf::type::char_: return "CHAR";
+        case cf::type::varchar: return "VARCHAR";
+        case cf::type::tinytext: return "TINYTEXT";
+        case cf::type::text: return "TEXT";
+        case cf::type::mediumtext: return "MEDIUMTEXT";
+        case cf::type::longtext: return "LONGTEXT";
+        case cf::type::binary: return "BINARY";
+        case cf::type::varbinary: return "VARBINARY";
+        case cf::type::tinyblob: return "TINYBLOB";
+        case cf::type::mediumblob: return "MEDIUMBLOB";
+        case cf::type::blob: return "BLOB";
+        case cf::type::longblob: return "LONGBLOB";
+        case cf::type::enum_: return "ENUM";
+        case cf::type::set: return "SET";
+        default: return "UNKNWON";
     }
     return "";
 }

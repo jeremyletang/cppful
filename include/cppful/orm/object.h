@@ -34,7 +34,10 @@ namespace orm {
 template <typename T>
 struct object<> {
 protected:
-    std::unordered_map<std::string, cf::orm::value> values;
+    std::unordered_map<std::string, cf::orm::field> fields;
+
+private:
+    void ensure_scheme();
 
 public:
     virtual ~object {}

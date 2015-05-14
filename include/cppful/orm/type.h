@@ -29,25 +29,40 @@
 namespace cf {
 
 enum class type {
-    character,
-    varchar,
-    binary,
-    boolean,
-    varbinary,
-    smallint,
-    integer,
+    // numeric
+    tinyint, // char
+    smallint, // short
+    mediumint, // 3bytes
+    int_, // int
+    bigint, // long
     decimal,
-    numeric,
-    float_,
-    real,
-    double_precision,
+    float_, // float
+    double_, // double
+    real, // double
+    bit,
+    boolean, // bool
+    serial,
+    // dates
     date,
-    time,
+    datetime,
     timestamp,
-    interval,
-    array,
-    multiset,
-    xml
+    time,
+    year,
+    // strings
+    char_,
+    varchar,
+    tinytext,
+    text,
+    mediumtext,
+    longtext,
+    binary,
+    varbinary,
+    tinyblob,
+    mediumblob,
+    blob,
+    longblob,
+    enum_,
+    set
 };
 
 std::string to_string(cf::type t);

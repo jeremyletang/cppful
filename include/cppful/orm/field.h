@@ -38,8 +38,10 @@ struct field {
 private:
     cf::any val;
     std::string name;
+    const std::string type_name;
     cf::type ty;
 
+    bool is_unsigned;
     bool nullable;
     bool auto_increment;
     bool id;
@@ -52,8 +54,16 @@ public:
 
     field(bool& val, std::string name = "");
     field(cf::orm::null<bool>& val, std::string name = "");
+
+    field(char& val, std::string name = "");
+    field(cf::orm::null<char>& val, std::string name = "");
+    field(unsigned char& val, std::string name = "");
+    field(cf::orm::null<unsigned char>& val, std::string name = "");
+
     field(int& val, std::string name = "");
     field(cf::orm::null<int>& val, std::string name = "");
+    field(unsigned int& val, std::string name = "");
+    field(cf::orm::null<unsigned int>& val, std::string name = "");
 
     ~field() = default;
 
