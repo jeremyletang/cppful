@@ -57,6 +57,7 @@ std::string to_string(cf::orm::type m) {
         case cf::orm::type::longblob: return "LONGBLOB";
         case cf::orm::type::enum_: return "ENUM";
         case cf::orm::type::set: return "SET";
+        case cf::orm::type::error: return "ERROR";
         default: return "UNKNWON";
     }
     return "";

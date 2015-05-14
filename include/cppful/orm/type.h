@@ -64,7 +64,8 @@ enum class type {
     blob,
     longblob,
     enum_,
-    set
+    set,
+    error
 };
 
 }

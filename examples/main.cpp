@@ -93,4 +93,7 @@ int main() {
     auto varchar = cf::orm::varchar { "Goodbye from a string of type: "};
     std::cout << char_ << cf::to_string(char_.kind()) << std::endl;
     std::cout << varchar << cf::to_string(varchar.kind()) << std::endl;
+    auto varchar_ref = cf::orm::field { varchar, "varchar_ref" };
+    varchar_ref.get<cf::orm::varchar>() = "this string has been updated !";
+    std::cout << varchar_ref.get<cf::orm::varchar>() << " string type: " << cf::to_string(varchar_ref.type()) << std::endl;
 }

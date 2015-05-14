@@ -52,6 +52,8 @@ field& field::operator=(const field& oth) {
     return *this;
 }
 
+// bool
+
 field::field(bool& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
@@ -63,6 +65,8 @@ field::field(cf::orm::null<bool>& val, std::string name)
 , name(name)
 , ty(cf::orm::type::boolean)
 , is_unsigned(false) {}
+
+// char
 
 field::field(char& val, std::string name)
 : val(any(std::ref(val)))
@@ -88,6 +92,34 @@ field::field(cf::orm::null<unsigned char>& val, std::string name)
 , ty(cf::orm::type::tinyint)
 , is_unsigned(true) {}
 
+// short
+
+field::field(short& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::smallint)
+, is_unsigned(false) {}
+
+field::field(cf::orm::null<short>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::smallint)
+, is_unsigned(false) {}
+
+field::field(unsigned short& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::smallint)
+, is_unsigned(true) {}
+
+field::field(cf::orm::null<unsigned short>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::smallint)
+, is_unsigned(true) {}
+
+// int
+
 field::field(int& val, std::string name)
 : val(any(std::ref(val)))
 , name(name)
@@ -112,6 +144,59 @@ field::field(cf::orm::null<unsigned int>& val, std::string name)
 , ty(cf::orm::type::int_)
 , is_unsigned(true) {}
 
+// long
+
+field::field(long& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::bigint)
+, is_unsigned(false) {}
+
+field::field(cf::orm::null<long>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::bigint)
+, is_unsigned(false) {}
+
+field::field(unsigned long& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::bigint)
+, is_unsigned(true) {}
+
+field::field(cf::orm::null<unsigned long>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::bigint)
+, is_unsigned(true) {}
+
+// float
+
+field::field(float& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::float_)
+, is_unsigned(false) {}
+
+field::field(cf::orm::null<float>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::float_)
+, is_unsigned(false) {}
+
+// double
+
+field::field(double& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::double_)
+, is_unsigned(false) {}
+
+field::field(cf::orm::null<double>& val, std::string name)
+: val(any(std::ref(val)))
+, name(name)
+, ty(cf::orm::type::double_)
+, is_unsigned(false) {}
 
 cf::orm::type field::type() const
 { return this->ty; }

@@ -24,8 +24,27 @@
 
 namespace cf {
 
-std::string to_string(cf::orm::string_kind m) {
-    switch (m) {
+namespace orm {
+
+cf::orm::type string_kind_to_orm_type(cf::orm::string_kind k) {
+    switch (k) {
+        case cf::orm::string_kind::char_ : return cf::orm::type::char_;
+        case cf::orm::string_kind::varchar : return cf::orm::type::varchar;
+        case cf::orm::string_kind::tinytext : return cf::orm::type::tinytext;
+        case cf::orm::string_kind::text : return cf::orm::type::text;
+        case cf::orm::string_kind::mediumtext : return cf::orm::type::mediumtext;
+        case cf::orm::string_kind::longtext : return cf::orm::type::longtext;
+        case cf::orm::string_kind::binary : return cf::orm::type::binary;
+        case cf::orm::string_kind::varbinary : return cf::orm::type::varbinary;
+        default: return cf::orm::type::error;
+    }
+    return cf::orm::type::error;
+}
+
+}
+
+std::string to_string(cf::orm::string_kind k) {
+    switch (k) {
         case cf::orm::string_kind::char_ : return "char";
         case cf::orm::string_kind::varchar : return "varchar";
         case cf::orm::string_kind::tinytext : return "tinytext";

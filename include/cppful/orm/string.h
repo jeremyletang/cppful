@@ -26,6 +26,8 @@
 #include <type_traits>
 #include <string>
 
+#include "type.h"
+
 namespace cf {
 
 namespace orm {
@@ -96,12 +98,15 @@ struct string<string_kind::varbinary> : public std::string {
 };
 
 typedef string<string_kind::char_> char_;
-typedef string<string_kind::tinytext> varchar;
+typedef string<string_kind::varchar> varchar;
+typedef string<string_kind::tinytext> tinytext;
 typedef string<string_kind::text> text;
 typedef string<string_kind::mediumtext> mediumtext;
 typedef string<string_kind::longtext> longtext;
 typedef string<string_kind::binary> binary;
 typedef string<string_kind::varbinary> varbinary;
+
+cf::orm::type string_kind_to_orm_type(cf::orm::string_kind k);
 
 }
 
