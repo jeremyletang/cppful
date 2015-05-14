@@ -89,8 +89,8 @@ int main() {
     std::cout << *null_int_ref.get<cf::orm::null<int>>() << std::endl;
 
 
-    auto char_ = cf::orm::string<cf::orm::string_kind::char_>{"hello world from a string of type: "};
-    cf::orm::string<cf::orm::string_kind::varchar> varchar = "Goodbye from a string of type: ";
+    auto char_ = cf::orm::char_ {"hello world from a string of type: "};
+    auto varchar = cf::orm::varchar { "Goodbye from a string of type: "};
     std::cout << char_ << cf::to_string(char_.kind()) << std::endl;
     std::cout << varchar << cf::to_string(varchar.kind()) << std::endl;
 }

@@ -95,6 +95,14 @@ struct string<string_kind::varbinary> : public std::string {
   string_kind kind() const { return string_kind::varbinary; }
 };
 
+typedef string<string_kind::char_> char_;
+typedef string<string_kind::tinytext> varchar;
+typedef string<string_kind::text> text;
+typedef string<string_kind::mediumtext> mediumtext;
+typedef string<string_kind::longtext> longtext;
+typedef string<string_kind::binary> binary;
+typedef string<string_kind::varbinary> varbinary;
+
 }
 
 std::string to_string(cf::orm::string_kind t);
