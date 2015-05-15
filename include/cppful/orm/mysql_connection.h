@@ -20,37 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_OBJECT
-#define CPPFUL_OBJECT
+#ifndef CPPFUL_ORM_MYSQL_CONNECTION
+#define CPPFUL_ORM_MYSQL_CONNECTION
 
-#include <map>
-#include <mutex>
-
-#include "field.h"
+#include <string>
 
 namespace cf {
 
 namespace orm {
 
-template <typename T>
-struct object {
-protected:
-    std::map<std::string, cf::orm::field> fields;
-    static std::mutex mtx;
+struct mysql_connection {
+    MYSQL *connection;
 
-private:
-    void ensure_scheme();
-
-public:
-    virtual ~object() {}
-    bool create() { return true; }
-    bool read() { return true; }
-    bool update() { return true; }
-    bool drop() { return true; }
-
+    void make_table(const std::string& name);
 };
-
-template <typename T> std::mutex object<T>::mtx;
 
 }
 

@@ -39,5 +39,7 @@
 #include "cppful/orm/null.h"
 #include "cppful/orm/string.h"
 #include "cppful/orm/object.h"
+#include "cppful/orm/mysql_factory.h"
+#include "cppful/orm/mysql_connection.h"
 
 #endif

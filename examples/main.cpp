@@ -113,4 +113,15 @@ int main() {
     auto varchar_ref = cf::orm::field { varchar };
     varchar_ref.get<cf::orm::varchar>() = "this string has been updated !";
     std::cout << varchar_ref.get<cf::orm::varchar>() << " string type: " << cf::to_string(varchar_ref.type()) << std::endl;
+
+    auto f = cf::orm::mysql_factory {
+        "localhost",
+        "root",
+        "root",
+        "cppful_test"
+    };
+    // auto connection_res = f.connect();
+    // if (not connection_res.first) {
+    //     std::cout << connection_res.second << std::endl;
+    // }
 }

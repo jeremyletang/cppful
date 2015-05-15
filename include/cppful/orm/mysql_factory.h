@@ -20,37 +20,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_OBJECT
-#define CPPFUL_OBJECT
+#ifndef CPPFUL_ORM_MYSQL_FACTORY
+#define CPPFUL_ORM_MYSQL_FACTORY
 
-#include <map>
-#include <mutex>
+#include <functional>
 
-#include "field.h"
+#ifdef __APPLE__
+#include "mysql.h"
+#elif __linux__
+#include "mysql/mysql.h"
+#endif
+#include "mysql_connection.h"
 
 namespace cf {
 
 namespace orm {
 
-template <typename T>
-struct object {
-protected:
-    std::map<std::string, cf::orm::field> fields;
-    static std::mutex mtx;
-
+struct mysql_factory {
 private:
-    void ensure_scheme();
+    std::string host;
+    std::string username;
+    std::string password;
+    std::string database;
+    unsigned int port;
 
 public:
-    virtual ~object() {}
-    bool create() { return true; }
-    bool read() { return true; }
-    bool update() { return true; }
-    bool drop() { return true; }
+    mysql_factory() = delete;
+    mysql_factory(const std::string& host,
+                  const std::string& username,
+                  const std::string& password,
+                  const std::string& database,
+                  unsigned int port = 0);
+    mysql_factory(mysql_factory&& oth);
+    ~mysql_factory();
+    mysql_factory& operator=(mysql_factory&& oth);
+
+    cf::orm::mysql_connection&& make();
 
 };
-
-template <typename T> std::mutex object<T>::mtx;
 
 }
 

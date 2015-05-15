@@ -31,6 +31,7 @@ add_library (cppful SHARED ${sources})
 add_executable (simple_server examples/main.cpp)
 
 target_link_libraries (simple_server cppful)
+target_link_libraries (cppful mysqlclient_r)
 
 set_target_properties(cppful
     PROPERTIES
