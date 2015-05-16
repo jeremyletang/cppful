@@ -33,7 +33,7 @@ middleware::middleware(const middleware& oth)
 , handler(oth.handler) {}
 
 middleware& middleware::operator=(middleware&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->name = std::move(oth.name);
         this->handler = std::move(oth.handler);
     }
@@ -41,7 +41,7 @@ middleware& middleware::operator=(middleware&& oth) {
 }
 
 middleware& middleware::operator=(const middleware& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->name = oth.name;
         this->handler = oth.handler;
     }

@@ -53,7 +53,7 @@ public:
     ~null() = default;
 
     null<T>& operator=(null<T>&& oth) {
-        if (this != &oth) {
+        if (this not_eq &oth) {
             this->val = std::move(oth.val);
             this->is_null = oth.is_null;
         }
@@ -61,7 +61,7 @@ public:
     }
 
     null<T>& operator=(const null<T>& oth) {
-        if (this != &oth) {
+        if (this not_eq &oth) {
             this->val = oth.val;
             this->is_null = oth.is_null;
         }

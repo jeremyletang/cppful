@@ -37,7 +37,7 @@ field::field(const field& oth)
 , ty(oth.ty) {}
 
 field& field::operator=(field&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->val = std::move(oth.val);
         this->ty = oth.ty;
     }
@@ -45,7 +45,7 @@ field& field::operator=(field&& oth) {
 }
 
 field& field::operator=(const field& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->val = oth.val;
         this->ty = oth.ty;
     }

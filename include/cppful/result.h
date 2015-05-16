@@ -70,7 +70,7 @@ public:
     , err(oth.err) {}
 
     result& operator=(result&& oth) {
-        if (this != &oth) {
+        if (this not_eq &oth) {
             this->status = std::move(oth.status);
             this->ok = std::move(oth.ok);
             this->err = std::move(oth.err);
@@ -78,7 +78,7 @@ public:
         return *this;
     }
     result& operator=(const result& oth) {
-         if (this != &oth) {
+         if (this not_eq &oth) {
             this->status = oth.status;
             this->ok = oth.ok;
             this->err = oth.err;

@@ -30,11 +30,9 @@
 namespace cf {
 
 struct middleware {
-private:
     std::string name;
     std::function<void(cf::context&)> handler;
 
-public:
     middleware() = default;
     middleware(middleware&& oth);
     middleware(const middleware& oth);

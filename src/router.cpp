@@ -22,6 +22,9 @@
 
 #include "cppful/router.h"
 
+#include <algorithm>
+#include "cppful/stop.h"
+
 namespace cf {
 
 const std::string router::var_regex = "([-_a-zA-Z0-9]*)";
@@ -55,7 +58,7 @@ router::router(std::initializer_list<cf::middleware_wrapper> wrappers)
 , path_not_found_handler(path_not_found) {}
 
 router& router::operator=(router&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->routes = oth.routes;
         this->init_wrappers = oth.init_wrappers;
         this->path_not_found_handler = oth.path_not_found_handler;
@@ -64,7 +67,7 @@ router& router::operator=(router&& oth) {
 }
 
 router& router::operator=(const router& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->routes = std::move(oth.routes);
         this->init_wrappers = std::move(oth.init_wrappers);
         this->path_not_found_handler = std::move(oth.path_not_found_handler);
@@ -74,7 +77,7 @@ router& router::operator=(const router& oth) {
 
 std::string router::sanitize_path(std::string path) {
     auto sanitized = std::regex_replace(path, this->sanitize_regex, "/");
-    if (not sanitized.empty() && sanitized.back() not_eq '/') {
+    if (not sanitized.empty() and sanitized.back() not_eq '/') {
         sanitized.push_back('/');
     }
     return sanitized;
@@ -118,6 +121,9 @@ std::vector<std::pair<std::string, cf::method>> router::validate() {
                 dup_list.push_back(std::make_pair(route.path, route.method));
             }
         } else {
+            auto&& m = std::move(w.unwrap_middleware());
+            auto m_name = m.name;
+            this->middlewares.emplace(m_name, std::move(m));
             // store the middleware
         }
 
@@ -154,21 +160,30 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     return true;
 }
 
-cf::response router::dispatch(cf::context& ctxt) {
-    auto sanized_path = this->sanitize_path(ctxt.path);
+cf::response router::dispatch(cf::context& ctx) {
+    auto sanized_path = this->sanitize_path(ctx.path);
     for (auto& r : this->routes) {
         // if the path match
         if (std::regex_match(sanized_path, r.second.match_path)) {
             // try to find the route for the method
-            auto good_route = r.second.methods_map.find(ctxt.method);
+            auto good_route = r.second.methods_map.find(ctx.method);
             if (good_route not_eq r.second.methods_map.end()) {
                 // process middlewares
+                try {
+                    std::for_each(good_route->second.middlewares.begin(),
+                                  good_route->second.middlewares.end(),
+                                  [&](auto& name)
+                                  { this->middlewares.find(name)->second.handler(ctx); });
+                // if one middleware stop the process
+                } catch (cf::stop& s) {
+                    return s.unwrap_response();
+                }
                 // call the route
-                return good_route->second.handler(ctxt);
+                return good_route->second.handler(ctx);
             }
         }
     }
-    return this->path_not_found_handler(ctxt);
+    return this->path_not_found_handler(ctx);
 }
 
 
@@ -188,7 +203,7 @@ router::route_wrapper::route_wrapper(std::function<cf::response(cf::context&)>&&
 , middlewares(std::move(middlewares)) {}
 
 router::route_wrapper& router::route_wrapper::operator=(route_wrapper&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->handler = oth.handler;
         this->middlewares = oth.middlewares;
     }
@@ -196,7 +211,7 @@ router::route_wrapper& router::route_wrapper::operator=(route_wrapper&& oth) {
 }
 
 router::route_wrapper& router::route_wrapper::operator=(const route_wrapper& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->handler = std::move(oth.handler);
         this->middlewares = std::move(oth.middlewares);
     }
@@ -222,7 +237,7 @@ router::route_data::route_data(std::regex&& match_path,
 , methods_map({}) {}
 
 router::route_data& router::route_data::operator=(route_data&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->match_path = std::move(oth.match_path);
         this->var_names = std::move(oth.var_names);
         this->methods_map = std::move(oth.methods_map);
@@ -231,7 +246,7 @@ router::route_data& router::route_data::operator=(route_data&& oth) {
 }
 
 router::route_data& router::route_data::operator=(const route_data& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->match_path = oth.match_path;
         this->var_names = oth.var_names;
         this->methods_map = oth.methods_map;

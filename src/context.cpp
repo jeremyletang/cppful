@@ -37,7 +37,7 @@ context::context(const std::string& path, cf::method method)
 , method(method) {}
 
 context& context::operator=(context&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->path = std::move(oth.path);
         this->method = std::move(oth.method);
     }
@@ -45,7 +45,7 @@ context& context::operator=(context&& oth) {
 }
 
 context& context::operator=(const context& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->path = oth.path;
         this->method = oth.method;
     }

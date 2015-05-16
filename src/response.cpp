@@ -52,7 +52,7 @@ response::response(cf::status m, const std::string& body)
 
 
 response& response::operator=(response&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->status = std::move(oth.status);
         this->body = std::move(oth.body);
         this->headers = std::move(oth.headers);
@@ -61,7 +61,7 @@ response& response::operator=(response&& oth) {
 }
 
 response& response::operator=(const response& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->status = oth.status;
         this->body = oth.body;
         this->headers = oth.headers;

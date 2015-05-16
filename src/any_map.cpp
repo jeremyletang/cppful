@@ -33,14 +33,14 @@ any_map::any_map(const any_map& oth)
 any_map::any_map(std::initializer_list<any> init) {}
 
 any_map& any_map::operator=(any_map&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->map = std::move(oth.map);
     }
     return *this;
 }
 
 any_map& any_map::operator=(const any_map& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->map = oth.map;
     }
     return *this;

@@ -115,11 +115,14 @@ public:
 
     friend bool operator==(const any& a, std::nullptr_t nullp);
     friend bool operator==(std::nullptr_t nullp, const any& a);
-
+    friend bool operator!=(const any& a, std::nullptr_t nullp);
+    friend bool operator!=(std::nullptr_t nullp, const any& a);
 };
 
 bool operator==(const any& a, std::nullptr_t nullp);
 bool operator==(std::nullptr_t nullp, const any& a);
+bool operator!=(const any& a, std::nullptr_t nullp);
+bool operator!=(std::nullptr_t nullp, const any& a);
 
 }
 

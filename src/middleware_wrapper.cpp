@@ -35,7 +35,7 @@ middleware_wrapper::middleware_wrapper(const middleware_wrapper& oth)
 , kind(oth.kind) {}
 
 middleware_wrapper& middleware_wrapper::operator=(middleware_wrapper&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->route = std::move(oth.route);
         this->middleware = std::move(oth.middleware);
         this->kind = oth.kind;
@@ -44,7 +44,7 @@ middleware_wrapper& middleware_wrapper::operator=(middleware_wrapper&& oth) {
 }
 
 middleware_wrapper& middleware_wrapper::operator=(const middleware_wrapper& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->route = oth.route;
         this->middleware = oth.middleware;
         this->kind = oth.kind;

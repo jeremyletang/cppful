@@ -39,6 +39,8 @@ public:
     stop(cf::response response);
     stop(cf::status status, const std::string& body);
     ~stop() = default;
+
+    cf::response&& unwrap_response();
 };
 
 }

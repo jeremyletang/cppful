@@ -35,7 +35,7 @@ any::~any()
 { if (this->value) { delete this->value; } }
 
 any& any::operator=(const any& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->clear();
         this->value = oth.value->copy();
     }
@@ -43,7 +43,7 @@ any& any::operator=(const any& oth) {
 }
 
 any& any::operator=(any&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->clear();
         this->value = oth.value;
         oth.value = nullptr;
@@ -67,5 +67,11 @@ bool operator==(const any& a, std::nullptr_t nullp)
 
 bool operator==(std::nullptr_t nullp, const any& a)
 { return a.value == nullptr; }
+
+bool operator!=(const any& a, std::nullptr_t nullp)
+{ return not (a.value == nullptr); }
+
+bool operator!=(std::nullptr_t nullp, const any& a)
+{ return not (a.value == nullptr); }
 
 }

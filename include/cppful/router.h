@@ -88,6 +88,8 @@ private:
 
     // match the path + the list of the routes it
     std::unordered_map<std::string, route_data> routes;
+    // middlewares map
+    std::unordered_map<std::string, cf::middleware> middlewares;
     // the vector build using the initializer list from the router constructor
     std::vector<cf::middleware_wrapper> init_wrappers;
     // handler when a path is not found

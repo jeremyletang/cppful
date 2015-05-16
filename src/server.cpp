@@ -43,7 +43,7 @@ server::server(cf::router router, std::string ip, unsigned int port, std::string
 , mime(std::move(mime)) {}
 
 server& server::operator=(const server& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->router = oth.router;
         this->ip = oth.ip;
         this->port = oth.port;
@@ -53,7 +53,7 @@ server& server::operator=(const server& oth) {
 }
 
 server& server::operator=(server&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->router = std::move(oth.router);
         this->ip = std::move(oth.ip);
         this->port = std::move(oth.port);

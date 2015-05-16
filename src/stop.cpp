@@ -30,4 +30,8 @@ stop::stop(cf::response response)
 stop::stop(cf::status status, const std::string& body)
 : response({ status, body }) {}
 
+cf::response&& stop::unwrap_response() {
+    return std::move(this->response);
+}
+
 }

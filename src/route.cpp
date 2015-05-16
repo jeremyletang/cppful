@@ -34,10 +34,10 @@ route::route(const route& oth)
 : method(oth.method)
 , path(oth.path)
 , handler(oth.handler)
-, middlewares(std::move(middlewares)) {}
+, middlewares(oth.middlewares) {}
 
 route& route::operator=(const route& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->method = oth.method;
         this->path = oth.path;
         this->handler = oth.handler;
@@ -47,7 +47,7 @@ route& route::operator=(const route& oth) {
 }
 
 route& route::operator=(route&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->method = std::move(oth.method);
         this->path = std::move(oth.path);
         this->handler = std::move(oth.handler);

@@ -55,7 +55,7 @@ mysql_factory::~mysql_factory() {
 }
 
 mysql_factory& mysql_factory::operator=(mysql_factory&& oth) {
-    if (this != &oth) {
+    if (this not_eq &oth) {
         this->host = std::move(oth.host);
         this->username = std::move(oth.username);
         this->password = std::move(oth.password);

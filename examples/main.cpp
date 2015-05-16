@@ -54,7 +54,7 @@ cf::response bad_request(cf::context& ctx) {
 int main() {
     std::signal(SIGINT, sigint_handler);
     auto app = cf::server {
-        { { cf::method::get, "/ok", ok },
+        { { cf::method::get, "/ok", ok, {"hello_middleware"} },
           { cf::method::get, "/no_content", no_content },
           { cf::method::get, "/no_content", no_content },
           { cf::method::post, "/no_content", no_content_post },
