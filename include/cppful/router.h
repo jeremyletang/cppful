@@ -33,6 +33,7 @@
 #include "middleware.h"
 #include "middleware_wrapper.h"
 #include "method.h"
+#include "result.h"
 
 namespace cf {
 
@@ -53,7 +54,7 @@ private:
         // the middleware names to call on dispatch
         std::vector<std::string> middlewares;
 
-        route_wrapper() = delete;
+        route_wrapper() = default;
         route_wrapper(route_wrapper&& oth);
         route_wrapper(const route_wrapper& oth);
         route_wrapper(std::function<cf::response(cf::context&)>&& handler,
@@ -73,7 +74,7 @@ private:
         // association of the different http methods/routes for a given path
         std::map<cf::method, route_wrapper> methods_map;
 
-        route_data() = delete;
+        route_data() = default;
         route_data(route_data&& oth);
         route_data(const route_data& oth);
         route_data(std::regex&& match_path,
@@ -89,6 +90,8 @@ private:
     std::unordered_map<std::string, route_data> routes;
     // the vector build using the initializer list from the router constructor
     std::vector<cf::middleware_wrapper> init_wrappers;
+    // handler when a path is not found
+    std::function<cf::response(cf::context&)> path_not_found_handler;
 
     std::string sanitize_path(std::string);
     std::pair<std::regex, std::vector<std::string>> make_route_regex(std::string path);

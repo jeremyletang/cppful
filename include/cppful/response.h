@@ -31,12 +31,10 @@
 namespace cf {
 
 struct response {
-private:
     cf::status status;
     std::string body;
     std::map<std::string, std::string> headers;
 
-public:
     response() = default;
     response(response&& oth);
     response(const response& oth);

@@ -34,22 +34,31 @@ const std::regex router::find_two_wildcard_regex = std::regex("(\\*\\*)");
 const std::regex router::find_placeholder_regex = std::regex("(__TWO_WILDCARD_PLACEHOLDER__)");
 const std::regex router::sanitize_regex = std::regex("//+");
 
+cf::response path_not_found(cf::context&) {
+    return cf::response { cf::status::not_found, "Path not found on this server." };
+}
+
 router::router(router&& oth)
 : routes(std::move(oth.routes))
-, init_wrappers(std::move(oth.init_wrappers)) {}
+, init_wrappers(std::move(oth.init_wrappers))
+, path_not_found_handler(path_not_found) {}
 
 router::router(const router& oth)
 : routes(oth.routes)
-, init_wrappers(oth.init_wrappers) {}
+, init_wrappers(oth.init_wrappers)
+, path_not_found_handler(path_not_found) {}
+
 
 router::router(std::initializer_list<cf::middleware_wrapper> wrappers)
 : routes({})
-, init_wrappers(wrappers) {}
+, init_wrappers(wrappers)
+, path_not_found_handler(path_not_found) {}
 
 router& router::operator=(router&& oth) {
     if (this != &oth) {
         this->routes = oth.routes;
         this->init_wrappers = oth.init_wrappers;
+        this->path_not_found_handler = oth.path_not_found_handler;
     }
     return *this;
 }
@@ -58,6 +67,7 @@ router& router::operator=(const router& oth) {
     if (this != &oth) {
         this->routes = std::move(oth.routes);
         this->init_wrappers = std::move(oth.init_wrappers);
+        this->path_not_found_handler = std::move(oth.path_not_found_handler);
     }
     return *this;
 }
@@ -145,9 +155,20 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
 }
 
 cf::response router::dispatch(cf::context& ctxt) {
-    auto path = ctxt.path;
-    
-    return cf::response{};
+    auto sanized_path = this->sanitize_path(ctxt.path);
+    for (auto& r : this->routes) {
+        // if the path match
+        if (std::regex_match(sanized_path, r.second.match_path)) {
+            // try to find the route for the method
+            auto good_route = r.second.methods_map.find(ctxt.method);
+            if (good_route not_eq r.second.methods_map.end()) {
+                // process middlewares
+                // call the route
+                return good_route->second.handler(ctxt);
+            }
+        }
+    }
+    return this->path_not_found_handler(ctxt);
 }
 
 

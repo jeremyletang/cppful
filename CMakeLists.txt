@@ -29,8 +29,10 @@ endif()
 
 add_library (cppful SHARED ${sources})
 add_executable (simple_server examples/main.cpp)
+add_executable (tests examples/tests.cpp)
 
 target_link_libraries (simple_server cppful)
+target_link_libraries (tests cppful)
 target_link_libraries (cppful mysqlclient_r)
 
 set_target_properties(cppful
@@ -39,6 +41,11 @@ set_target_properties(cppful
 )
 
 set_target_properties(simple_server
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
+)
+
+set_target_properties(tests
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
 )
