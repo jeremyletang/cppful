@@ -25,13 +25,15 @@
 
 #include <string>
 
-#include "cppful/method.h"
+#include "method.h"
+#include "any_map.h"
 
 namespace cf {
 
 struct context {
     std::string path;
     cf::method method;
+    cf::any_map custom_data;
 
     context() = default;
     context(context&& oth);

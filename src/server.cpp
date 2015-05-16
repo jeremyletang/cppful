@@ -79,4 +79,6 @@ void server::validate_routes() {
 
 cf::router& server::get_router() { return this->router; }
 
+void server::set_router(cf::router&& router) { this->router = std::move(router); }
+
 }

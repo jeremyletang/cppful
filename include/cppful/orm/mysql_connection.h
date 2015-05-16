@@ -24,6 +24,11 @@
 #define CPPFUL_ORM_MYSQL_CONNECTION
 
 #include <string>
+#ifdef __APPLE__
+#include "mysql.h"
+#elif __linux__
+#include "mysql/mysql.h"
+#endif
 
 namespace cf {
 

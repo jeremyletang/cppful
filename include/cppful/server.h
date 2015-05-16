@@ -56,6 +56,7 @@ public:
 
     bool forever();
     cf::router& get_router();
+    void set_router(cf::router&& router);
 };
 
 }
