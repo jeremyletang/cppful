@@ -30,11 +30,13 @@
 #include "mysql/mysql.h"
 #endif
 
+#include "db_connection.h"
+
 namespace cf {
 
 namespace orm {
 
-struct mysql_connection {
+struct mysql_connection : public cf::orm::db_connection {
     MYSQL *connection;
 
     void make_table(const std::string& name);

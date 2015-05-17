@@ -30,13 +30,16 @@
 #elif __linux__
 #include "mysql/mysql.h"
 #endif
+
+#include "db_factory.h"
+#include "db_connection.h"
 #include "mysql_connection.h"
 
 namespace cf {
 
 namespace orm {
 
-struct mysql_factory {
+struct mysql_factory : public cf::orm::db_factory {
 private:
     std::string host;
     std::string username;
@@ -55,7 +58,7 @@ public:
     ~mysql_factory();
     mysql_factory& operator=(mysql_factory&& oth);
 
-    cf::orm::mysql_connection&& make();
+    std::unique_ptr<cf::orm::db_connection> make_connection();
 
 };
 

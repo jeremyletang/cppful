@@ -164,8 +164,8 @@ std::vector<std::pair<std::string, cf::method>> router::validate() {
         if (w.is_route()) {
             auto&& route = std::move(w.unwrap_route());
             // clean the path + add base_url
-            route.path = this->base_route + route.path;
-            auto sanitized_path = this->sanitize_path(route.path);
+            auto full_path = this->base_route + route.path;
+            auto sanitized_path = this->sanitize_path(full_path);
             // make the route_wrapper
             auto rw = router::route_wrapper {
                 std::move(route.handler),

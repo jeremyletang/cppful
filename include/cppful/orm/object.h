@@ -20,11 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_OBJECT
-#define CPPFUL_OBJECT
+#ifndef CPPFUL_ORM_OBJECT
+#define CPPFUL_ORM_OBJECT
 
 #include <map>
 #include <mutex>
+#include <type_traits>
 
 #include "field.h"
 
@@ -32,11 +33,14 @@ namespace cf {
 
 namespace orm {
 
-template <typename T>
+template <typename T, typename D>
 struct object {
 protected:
     std::map<std::string, cf::orm::field> fields;
     static std::mutex mtx;
+
+static_assert(std::is_base_of<cf::orm::db_factory, D>::value,
+              "error, D should be base on cf::orm::db_factory");
 
 private:
     void ensure_scheme();
@@ -50,7 +54,7 @@ public:
 
 };
 
-template <typename T> std::mutex object<T>::mtx;
+template <typename T, typename D> std::mutex object<T, D>::mtx;
 
 }
 

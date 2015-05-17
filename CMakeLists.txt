@@ -30,10 +30,12 @@ endif()
 add_library (cppful SHARED ${sources})
 add_executable (simple_server examples/main.cpp)
 add_executable (tests examples/tests.cpp)
+add_executable (orm examples/orm.cpp)
 
 target_link_libraries (simple_server cppful)
 target_link_libraries (tests cppful)
 target_link_libraries (cppful mysqlclient_r)
+target_link_libraries (orm cppful)
 
 set_target_properties(cppful
     PROPERTIES
@@ -50,3 +52,7 @@ set_target_properties(tests
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
 )
 
+set_target_properties(orm
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/target"
+)

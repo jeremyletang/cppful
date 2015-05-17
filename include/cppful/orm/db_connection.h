@@ -20,30 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef CPPFUL_CPPFUL
-#define CPPFUL_CPPFUL
+#ifndef CPPFUL_ORM_DB_CONNECTION
+#define CPPFUL_ORM_DB_CONNECTION
 
-#include "cppful/any_map.h"
-#include "cppful/context.h"
-#include "cppful/method.h"
-#include "cppful/middleware.h"
-#include "cppful/middleware_wrapper.h"
-#include "cppful/response.h"
-#include "cppful/result.h"
-#include "cppful/route.h"
-#include "cppful/router.h"
-#include "cppful/server.h"
-#include "cppful/status.h"
-#include "cppful/stop.h"
+namespace cf {
 
-#include "cppful/orm/db_connection.h"
-#include "cppful/orm/db_factory.h"
-#include "cppful/orm/field.h"
-#include "cppful/orm/mysql_connection.h"
-#include "cppful/orm/mysql_factory.h"
-#include "cppful/orm/null.h"
-#include "cppful/orm/object.h"
-#include "cppful/orm/string.h"
-#include "cppful/orm/type.h"
+namespace orm {
+
+struct db_connection {
+
+};
+
+}
+
+}
+
 
 #endif

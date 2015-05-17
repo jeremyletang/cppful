@@ -65,10 +65,11 @@ mysql_factory& mysql_factory::operator=(mysql_factory&& oth) {
     return *this;
 }
 
-cf::orm::mysql_connection&& mysql_factory::make() {
-    auto mc = cf::orm::mysql_connection{};
+std::unique_ptr<cf::orm::db_connection> mysql_factory::make_connection() {
+    auto mc = std::make_unique<cf::orm::mysql_connection>();
     return std::move(mc);
 }
+
 
 // std::pair<bool, std::string> mysql_factory::connect() {
 //     // init mysql

@@ -51,22 +51,22 @@ cf::response bad_request(cf::context& ctx) {
     return { cf::status::bad_request, cf::to_string(cf::status::bad_request) };
 }
 
-struct person : public cf::orm::object<person> {
-    int id;
-    cf::orm::tinytext name;
-    unsigned int age;
+// struct person : public cf::orm::object<person> {
+//     int id;
+//     cf::orm::tinytext name;
+//     unsigned int age;
 
-    // here we initialize the map with the struct members
-    person() {
-        this->fields = {
-            { "id", { this->id } },
-            { "name", { this->name } },
-            { "age", { this->age} }
-        };
-    }
-    ~person() = default;
+//     // here we initialize the map with the struct members
+//     person() {
+//         this->fields = {
+//             { "id", { this->id } },
+//             { "name", { this->name } },
+//             { "age", { this->age} }
+//         };
+//     }
+//     ~person() = default;
 
-};
+// };
 
 int main() {
     std::signal(SIGINT, sigint_handler);
