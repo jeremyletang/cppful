@@ -88,14 +88,15 @@ int main() {
           { "hello_middleware", hello_middleware },
           { "stop_middleware", stop_middleware } }
     };
+    app.get_router().set_base_url("/app/v1/");
     app.forever();
 
-    auto ctx = cf::context{"/ok", cf::method::get};
+    auto ctx = cf::context{"/app/v1/ok", cf::method::get};
     std::cout << app.get_router().dispatch(ctx).body << std::endl;
-    ctx = cf::context{"/noooooooooooooooo", cf::method::get};
+    ctx = cf::context{"/app/v1/noooooooooooooooo", cf::method::get};
     std::cout << app.get_router().dispatch(ctx).body << std::endl;
-    ctx = cf::context{"/route/bonjour/a/lot/paul/atreides", cf::method::get};
+    ctx = cf::context{"/app/v1/route/bonjour/a/lot/paul/atreides", cf::method::get};
     std::cout << app.get_router().dispatch(ctx).body << std::endl;
-    ctx = cf::context{"/route/this_is_var/and_this_wildcard/wildcard/a_new_wildcard/and/a_dwildcard/double/then_the_end", cf::method::get};
+    ctx = cf::context{"/app/v1/route/this_is_var/and_this_wildcard/wildcard/a_new_wildcard/and/a_dwildcard/double/then_the_end", cf::method::get};
     std::cout << app.get_router().dispatch(ctx).body << std::endl;
 }

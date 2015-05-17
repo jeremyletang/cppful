@@ -101,6 +101,8 @@ private:
     std::vector<cf::middleware_wrapper> init_wrappers;
     // handler when a path is not found
     std::function<cf::response(cf::context&)> path_not_found_handler;
+    // base url to apply for each url
+    std::string base_url;
 
     std::string sanitize_path(std::string);
     void make_route_regex(std::string path, router::route_data& rd);
@@ -141,6 +143,9 @@ public:
                       "error, route handler must be convertible to std::function");
         this->path_not_found_handler = handler;
     }
+
+    void set_base_url(std::string base_url);
+    const std::string& get_base_url() const;
 
 };
 

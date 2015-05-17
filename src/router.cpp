@@ -55,33 +55,37 @@ cf::response path_not_found(cf::context&) {
 router::router(router&& oth)
 : routes(std::move(oth.routes))
 , init_wrappers(std::move(oth.init_wrappers))
-, path_not_found_handler(path_not_found) {}
+, path_not_found_handler(std::move(oth.path_not_found_handler))
+, base_url(std::move(oth.base_url)) {}
 
 router::router(const router& oth)
 : routes(oth.routes)
 , init_wrappers(oth.init_wrappers)
-, path_not_found_handler(path_not_found) {}
-
+, path_not_found_handler(oth.path_not_found_handler)
+, base_url(oth.base_url) {}
 
 router::router(std::initializer_list<cf::middleware_wrapper> wrappers)
 : routes({})
 , init_wrappers(wrappers)
-, path_not_found_handler(path_not_found) {}
+, path_not_found_handler(path_not_found)
+, base_url("") {}
 
-router& router::operator=(router&& oth) {
+router& router::operator=(const router& oth) {
     if (this not_eq &oth) {
         this->routes = oth.routes;
         this->init_wrappers = oth.init_wrappers;
         this->path_not_found_handler = oth.path_not_found_handler;
+        this->base_url = oth.base_url;
     }
     return *this;
 }
 
-router& router::operator=(const router& oth) {
+router& router::operator=(router&& oth) {
     if (this not_eq &oth) {
         this->routes = std::move(oth.routes);
         this->init_wrappers = std::move(oth.init_wrappers);
         this->path_not_found_handler = std::move(oth.path_not_found_handler);
+        this->base_url = std::move(oth.base_url);
     }
     return *this;
 }
@@ -159,7 +163,8 @@ std::vector<std::pair<std::string, cf::method>> router::validate() {
         // if the wrapper contains a rotue
         if (w.is_route()) {
             auto&& route = std::move(w.unwrap_route());
-            // clean the path
+            // clean the path + add base_url
+            route.path = this->base_url + route.path;
             auto sanitized_path = this->sanitize_path(route.path);
             // make the route_wrapper
             auto rw = router::route_wrapper {
@@ -240,6 +245,7 @@ void router::capture_dwildcards_from_path(const std::string& path,
 }
 
 cf::response router::dispatch(cf::context& ctx) {
+    // sanitize the path
     auto sanitized_path = this->sanitize_path(ctx.path);
     for (auto& r : this->routes) {
         // if the path match
@@ -273,6 +279,13 @@ cf::response router::dispatch(cf::context& ctx) {
     }
     return this->path_not_found_handler(ctx);
 }
+
+void router::set_base_url(std::string base_url) {
+    base_url.push_back('/');
+    this->base_url = base_url;
+}
+
+const std::string& router::get_base_url() const { return this->base_url; }
 
 // router_wrapper impl
 
