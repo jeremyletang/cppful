@@ -107,11 +107,19 @@ private:
     std::vector<std::string> make_var_captures(std::string path);
     bool insert(std::string path, cf::method method, route_wrapper&& rw);
 
-    // capture path
+    // capture path vars
     void capture_var_from_path(const std::string& path,
                                std::regex& capture_regex,
                                cf::context& ctx,
                                const std::vector<std::string>& captures_names);
+    // capture path wildcards
+    void capture_wildcards_from_path(const std::string& path,
+                                     std::regex& capture_regex,
+                                     cf::context& ctx);
+    // capture path two wildcards
+    void capture_dwildcards_from_path(const std::string& path,
+                                      std::regex& capture_regex,
+                                      cf::context& ctx);
 
 public:
     router() = default;
@@ -126,6 +134,13 @@ public:
 
     std::vector<std::pair<std::string, cf::method>> validate();
     cf::response dispatch(cf::context& ctxt);
+
+    template <typename H>
+    void set_not_found_handler(H handler) {
+        static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
+                      "error, route handler must be convertible to std::function");
+        this->path_not_found_handler = handler;
+    }
 
 };
 

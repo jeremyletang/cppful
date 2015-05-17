@@ -27,15 +27,25 @@
 
 namespace cf {
 
+// captures regex for vars and wildcards
 const std::string router::capture_regex = "([-_a-zA-Z0-9]*)";
+// match regex for vars and wildcards
 const std::string router::match_regex = "[-_a-z0-9A-Z]*";
+
+// captures regex for double wildcards
 const std::string router::two_wildcard_capture_regex = "([/-_a-z0-9A-Z]*)";
+// match regex for double wildcards
 const std::string router::two_wildcard_match_regex = "[/-_a-z0-9A-Z]*";
 
+// find the vars in url
 const std::regex router::find_var_regex = std::regex(":[-_a-zA-Z0-9]*");
+// find wildcards in url
 const std::regex router::find_wildcard_regex = std::regex("(\\*)");
+// find double wildcards in url
 const std::regex router::find_two_wildcard_regex = std::regex("(\\*\\*)");
+// find the temporary placehorder for double wildcards
 const std::regex router::find_placeholder_regex = std::regex("(__TWO_WILDCARD_PLACEHOLDER__)");
+// find list of /
 const std::regex router::sanitize_regex = std::regex("//+");
 
 cf::response path_not_found(cf::context&) {
@@ -78,8 +88,8 @@ router& router::operator=(const router& oth) {
 
 std::string router::sanitize_path(std::string path) {
     auto sanitized = std::regex_replace(path, this->sanitize_regex, "/");
-    if (not sanitized.empty() and sanitized.back() not_eq '/') {
-        sanitized.push_back('/');
+    if (not sanitized.empty() and sanitized.back() == '/') {
+        sanitized.pop_back();
     }
     return sanitized;
 }
@@ -98,11 +108,48 @@ std::vector<std::string> router::make_var_captures(std::string path) {
 void router::make_route_regex(std::string path, router::route_data& rd) {
     rd.var_names  = std::move(this->make_var_captures(path));
     path = std::regex_replace(path, this->find_two_wildcard_regex, "__TWO_WILDCARD_PLACEHOLDER__");
-    path = std::regex_replace(path, this->find_wildcard_regex, this->match_regex);
-    path = std::regex_replace(path, this->find_placeholder_regex, this->two_wildcard_match_regex);
-    path = std::regex_replace(path, this->find_var_regex, this->capture_regex);
 
-    rd.match_path = std::regex(path);
+    // // match path regex
+    auto match_path = std::regex_replace(path, this->find_wildcard_regex, this->match_regex);
+    match_path = std::regex_replace(match_path,
+                                    this->find_placeholder_regex,
+                                    this->two_wildcard_match_regex);
+    match_path = std::regex_replace(match_path, this->find_var_regex, this->match_regex);
+
+    // capture var regex
+    auto capture_vars = std::regex_replace(path, this->find_wildcard_regex, this->match_regex);
+    capture_vars = std::regex_replace(capture_vars,
+                                      this->find_placeholder_regex,
+                                      this->two_wildcard_match_regex);
+    capture_vars = std::regex_replace(capture_vars, this->find_var_regex, this->capture_regex);
+
+    // capture wildcards regex
+    auto capture_wildcards = std::regex_replace(path,
+                                                this->find_wildcard_regex,
+                                                this->capture_regex);
+    capture_wildcards = std::regex_replace(capture_wildcards,
+                                           this->find_placeholder_regex,
+                                           this->two_wildcard_match_regex);
+    capture_wildcards = std::regex_replace(capture_wildcards,
+                                           this->find_var_regex,
+                                           this->match_regex);
+
+    // capture double_wildcard regex
+    auto capture_dwildcards = std::regex_replace(path,
+                                                 this->find_wildcard_regex,
+                                                 this->match_regex);
+    capture_dwildcards = std::regex_replace(capture_dwildcards,
+                                            this->find_placeholder_regex,
+                                            this->two_wildcard_capture_regex);
+    capture_dwildcards = std::regex_replace(capture_dwildcards,
+                                            this->find_var_regex,
+                                            this->match_regex);
+
+
+    rd.match_path = std::regex(match_path);
+    rd.capture_vars = std::regex(capture_vars);
+    rd.capture_wildcards = std::regex(capture_wildcards);
+    rd.capture_dwildcards = std::regex(capture_dwildcards);
 }
 
 std::vector<std::pair<std::string, cf::method>> router::validate() {
@@ -172,6 +219,26 @@ void router::capture_var_from_path(const std::string& path,
     }
 }
 
+void router::capture_wildcards_from_path(const std::string& path,
+                                        std::regex& capture_regex,
+                                        cf::context& ctx) {
+    std::smatch match;
+    std::regex_search(path, match, capture_regex);
+    std::for_each(++(match.begin()),
+                  match.end(),
+                  [&](auto& w) { ctx.wildcards.push_back(w); });
+}
+
+void router::capture_dwildcards_from_path(const std::string& path,
+                                         std::regex& capture_regex,
+                                         cf::context& ctx) {
+    std::smatch match;
+    std::regex_search(path, match, capture_regex);
+    std::for_each(++(match.begin()),
+                  match.end(),
+                  [&](auto& w) { ctx.d_wildcards.push_back(w); });
+}
+
 cf::response router::dispatch(cf::context& ctx) {
     auto sanitized_path = this->sanitize_path(ctx.path);
     for (auto& r : this->routes) {
@@ -192,11 +259,13 @@ cf::response router::dispatch(cf::context& ctx) {
                 }
                 // captures in path
                 this->capture_var_from_path(sanitized_path,
-                                            r.second.match_path,
+                                            r.second.capture_vars,
                                             ctx,
                                             r.second.var_names);
-                // this->capture_wildards_from_path(sanitized_path, r.second.match_path, ctx);
-                // this->capture_dwildcards_from_path(sanitized_path, r.second.match_path, ctx);
+                this->capture_wildcards_from_path(sanitized_path, r.second.capture_wildcards, ctx);
+                this->capture_dwildcards_from_path(sanitized_path,
+                                                   r.second.capture_dwildcards,
+                                                   ctx);
                 // call the route
                 return good_route->second.handler(ctx);
             }
@@ -204,7 +273,6 @@ cf::response router::dispatch(cf::context& ctx) {
     }
     return this->path_not_found_handler(ctx);
 }
-
 
 // router_wrapper impl
 
@@ -241,11 +309,17 @@ router::route_wrapper& router::route_wrapper::operator=(const route_wrapper& oth
 
 router::route_data::route_data(route_data&& oth)
 : match_path(std::move(oth.match_path))
+, capture_vars(std::move(oth.capture_vars))
+, capture_wildcards(std::move(oth.capture_wildcards))
+, capture_dwildcards(std::move(oth.capture_dwildcards))
 , var_names(std::move(oth.var_names))
 , methods_map(std::move(oth.methods_map)) {}
 
 router::route_data::route_data(const route_data& oth)
 : match_path(oth.match_path)
+, capture_vars(oth.capture_vars)
+, capture_wildcards(oth.capture_wildcards)
+, capture_dwildcards(oth.capture_dwildcards)
 , var_names(oth.var_names)
 , methods_map(oth.methods_map) {}
 
@@ -259,6 +333,9 @@ router::route_data& router::route_data::operator=(route_data&& oth) {
     if (this not_eq &oth) {
         this->match_path = std::move(oth.match_path);
         this->var_names = std::move(oth.var_names);
+        this->capture_vars = std::move(oth.capture_vars);
+        this->capture_wildcards = std::move(oth.capture_wildcards);
+        this->capture_dwildcards = std::move(oth.capture_dwildcards);
         this->methods_map = std::move(oth.methods_map);
     }
     return *this;
@@ -267,6 +344,9 @@ router::route_data& router::route_data::operator=(route_data&& oth) {
 router::route_data& router::route_data::operator=(const route_data& oth) {
     if (this not_eq &oth) {
         this->match_path = oth.match_path;
+        this->capture_vars = oth.capture_vars;
+        this->capture_wildcards = oth.capture_wildcards;
+        this->capture_dwildcards = oth.capture_dwildcards;
         this->var_names = oth.var_names;
         this->methods_map = oth.methods_map;
     }

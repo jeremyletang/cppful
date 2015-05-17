@@ -28,19 +28,25 @@ context::context(context&& oth)
 : path(std::move(oth.path))
 , method(std::move(oth.method))
 , custom_data(std::move(oth.custom_data))
-, vars(std::move(oth.vars)) {}
+, vars(std::move(oth.vars))
+, wildcards(std::move(oth.wildcards))
+, d_wildcards(std::move(oth.d_wildcards)) {}
 
 context::context(const context& oth)
 : path(oth.path)
 , method(oth.method)
 , custom_data(oth.custom_data)
-, vars(oth.vars) {}
+, vars(oth.vars)
+, wildcards(oth.wildcards)
+, d_wildcards(oth.d_wildcards) {}
 
 context::context(const std::string& path, cf::method method)
 : path(path)
 , method(method)
 , custom_data({})
-, vars({}) {}
+, vars({})
+, wildcards({})
+, d_wildcards({}) {}
 
 context& context::operator=(context&& oth) {
     if (this not_eq &oth) {
@@ -48,6 +54,8 @@ context& context::operator=(context&& oth) {
         this->method = std::move(oth.method);
         this->custom_data = std::move(oth.custom_data);
         this->vars = std::move(oth.vars);
+        this->wildcards = std::move(oth.wildcards);
+        this->d_wildcards = std::move(d_wildcards);
     }
     return *this;
 }
@@ -58,6 +66,8 @@ context& context::operator=(const context& oth) {
         this->method = oth.method;
         this->custom_data = oth.custom_data;
         this->vars = oth.vars;
+        this->wildcards = oth.wildcards;
+        this->d_wildcards = d_wildcards;
     }
     return *this;
 }
