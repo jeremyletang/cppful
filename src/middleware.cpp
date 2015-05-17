@@ -24,6 +24,10 @@
 
 namespace cf {
 
+middleware::middleware()
+: name("")
+, handler(nullptr) {}
+
 middleware::middleware(middleware&& oth)
 : name(std::move(oth.name))
 , handler(std::move(oth.handler)) {}

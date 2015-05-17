@@ -46,6 +46,13 @@ mysql_factory::mysql_factory(mysql_factory&& oth)
 , database(std::move(oth.database))
 , port(oth.port) {}
 
+mysql_factory::mysql_factory(const mysql_factory& oth)
+: host(oth.host)
+, username(oth.username)
+, password(oth.password)
+, database(oth.database)
+, port(oth.port) {}
+
 
 mysql_factory::~mysql_factory() {
     // if (this->connection) {
@@ -65,8 +72,19 @@ mysql_factory& mysql_factory::operator=(mysql_factory&& oth) {
     return *this;
 }
 
-std::unique_ptr<cf::orm::db_connection> mysql_factory::make_connection() {
-    auto mc = std::make_unique<cf::orm::mysql_connection>();
+mysql_factory& mysql_factory::operator=(const mysql_factory& oth) {
+    if (this not_eq &oth) {
+        this->host = oth.host;
+        this->username = oth.username;
+        this->password = oth.password;
+        this->database = oth.database;
+        this->port = oth.port;
+    }
+    return *this;
+}
+
+cf::orm::mysql_connection&& mysql_factory::make_connection() {
+    auto mc = cf::orm::mysql_connection{};
     return std::move(mc);
 }
 

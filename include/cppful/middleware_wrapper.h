@@ -45,16 +45,16 @@ public:
                        std::string path, H handler,
                        std::vector<std::string> middlewares = {})
     : route(std::move(m), std::move(path), handler, middlewares)
-    , middleware("", nullptr)
+    , middleware({})
     , kind(middleware_kind::route) {
         static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
                       "error, route handler must be convertible to std::function");
     }
     // build a middleware
     template<typename H>
-    middleware_wrapper(std::string name, H handler)
+    middleware_wrapper(std::string name, H&& handler)
     : route(cf::method::unknown, "", nullptr, {})
-    , middleware(std::move(name), handler)
+    , middleware(std::move(name), std::move(handler))
     , kind(middleware_kind::middleware) {
         static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
                       "error, middleware handler must be convertible to std::function");

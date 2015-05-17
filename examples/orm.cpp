@@ -1,7 +1,7 @@
 #include <cppful.h>
 #include <string>
 
-struct person : public cf::orm::object<person, cf::orm::mysql_factory> {
+struct person : public cf::orm::object<person> {
     int id;
     cf::orm::tinytext name;
     unsigned int age;
@@ -27,8 +27,11 @@ struct person : public cf::orm::object<person, cf::orm::mysql_factory> {
 struct sql_middleware {
     cf::orm::mysql_factory f;
 
+    sql_middleware()
+    : f("localhost", "root", "root", "cppful_test") {}
+
     void operator()(cf::context& ctx) {
-        ctx.custom_data.insert(f.make_connection());
+        ctx.custom_data.insert(std::move(f.make_connection()));
     }
 };
 
@@ -38,11 +41,12 @@ cf::response make_person(cf::context& ctx) {
         "Paul Atreides",
         42
     };
-    conn.create(p);
+    return {};
+    // conn.create(p);
 }
 
 int main() {
-    auto app = server {
+    auto app = cf::server {
         { { cf::method::get, "/person", make_person, {"mysql_middleware"} },
           { "mysql_middleware", sql_middleware{} }}
     }.forever();

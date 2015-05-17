@@ -33,14 +33,11 @@ namespace cf {
 
 namespace orm {
 
-template <typename T, typename D>
+template <typename T>
 struct object {
 protected:
     std::map<std::string, cf::orm::field> fields;
     static std::mutex mtx;
-
-static_assert(std::is_base_of<cf::orm::db_factory, D>::value,
-              "error, D should be base on cf::orm::db_factory");
 
 private:
     void ensure_scheme();
@@ -54,7 +51,7 @@ public:
 
 };
 
-template <typename T, typename D> std::mutex object<T, D>::mtx;
+template <typename T> std::mutex object<T>::mtx;
 
 }
 

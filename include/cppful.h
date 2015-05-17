@@ -36,8 +36,6 @@
 #include "cppful/status.h"
 #include "cppful/stop.h"
 
-#include "cppful/orm/db_connection.h"
-#include "cppful/orm/db_factory.h"
 #include "cppful/orm/field.h"
 #include "cppful/orm/mysql_connection.h"
 #include "cppful/orm/mysql_factory.h"

@@ -31,15 +31,13 @@
 #include "mysql/mysql.h"
 #endif
 
-#include "db_factory.h"
-#include "db_connection.h"
 #include "mysql_connection.h"
 
 namespace cf {
 
 namespace orm {
 
-struct mysql_factory : public cf::orm::db_factory {
+struct mysql_factory {
 private:
     std::string host;
     std::string username;
@@ -55,10 +53,12 @@ public:
                   const std::string& database,
                   unsigned int port = 0);
     mysql_factory(mysql_factory&& oth);
+    mysql_factory(const mysql_factory& oth);
     ~mysql_factory();
     mysql_factory& operator=(mysql_factory&& oth);
+    mysql_factory& operator=(const mysql_factory& oth);
 
-    std::unique_ptr<cf::orm::db_connection> make_connection();
+    cf::orm::mysql_connection&& make_connection();
 
 };
 
