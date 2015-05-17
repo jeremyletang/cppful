@@ -88,7 +88,7 @@ int main() {
           { "hello_middleware", hello_middleware },
           { "stop_middleware", stop_middleware } }
     };
-    app.get_router().set_base_url("/app/v1/");
+    app.get_router().set_base_route("/app/v1/");
     app.forever();
 
     auto ctx = cf::context{"/app/v1/ok", cf::method::get};
