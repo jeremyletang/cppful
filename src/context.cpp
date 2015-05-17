@@ -26,20 +26,28 @@ namespace cf {
 
 context::context(context&& oth)
 : path(std::move(oth.path))
-, method(std::move(oth.method)) {}
+, method(std::move(oth.method))
+, custom_data(std::move(oth.custom_data))
+, vars(std::move(oth.vars)) {}
 
 context::context(const context& oth)
 : path(oth.path)
-, method(oth.method) {}
+, method(oth.method)
+, custom_data(oth.custom_data)
+, vars(oth.vars) {}
 
 context::context(const std::string& path, cf::method method)
 : path(path)
-, method(method) {}
+, method(method)
+, custom_data({})
+, vars({}) {}
 
 context& context::operator=(context&& oth) {
     if (this not_eq &oth) {
         this->path = std::move(oth.path);
         this->method = std::move(oth.method);
+        this->custom_data = std::move(oth.custom_data);
+        this->vars = std::move(oth.vars);
     }
     return *this;
 }
@@ -48,6 +56,8 @@ context& context::operator=(const context& oth) {
     if (this not_eq &oth) {
         this->path = oth.path;
         this->method = oth.method;
+        this->custom_data = oth.custom_data;
+        this->vars = oth.vars;
     }
     return *this;
 }

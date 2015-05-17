@@ -24,6 +24,8 @@
 #define CPPFUL_CONTEXT
 
 #include <string>
+#include <vector>
+#include <map>
 
 #include "method.h"
 #include "any_map.h"
@@ -34,6 +36,11 @@ struct context {
     std::string path;
     cf::method method;
     cf::any_map custom_data;
+
+    // url datas
+    std::map<std::string, std::string> vars;
+    std::vector<std::string> wildcards;
+    std::vector<std::string> d_wildcards;
 
     context() = default;
     context(context&& oth);

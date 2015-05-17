@@ -44,9 +44,10 @@ private:
     static const std::regex find_two_wildcard_regex;
     static const std::regex find_placeholder_regex;
     static const std::regex sanitize_regex;
-    static const std::string var_regex;
-    static const std::string wildcard_regex;
-    static const std::string two_wildcard_regex;
+    static const std::string capture_regex;
+    static const std::string match_regex;
+    static const std::string two_wildcard_capture_regex;
+    static const std::string two_wildcard_match_regex;
 
     struct route_wrapper {
         // the function to call for for given route and method
@@ -69,6 +70,12 @@ private:
     struct route_data {
         // the regex to match the path to dispatch
         std::regex match_path;
+        // the regex to capture the urls variables
+        std::regex capture_vars;
+        // the regex to capture wildcards in path
+        std::regex capture_wildcards;
+        // the regex to capture double wildcards
+        std::regex capture_dwildcards;
         // the names of the var we will catch in the path
         std::vector<std::string> var_names;
         // association of the different http methods/routes for a given path
@@ -96,9 +103,15 @@ private:
     std::function<cf::response(cf::context&)> path_not_found_handler;
 
     std::string sanitize_path(std::string);
-    std::pair<std::regex, std::vector<std::string>> make_route_regex(std::string path);
+    void make_route_regex(std::string path, router::route_data& rd);
     std::vector<std::string> make_var_captures(std::string path);
     bool insert(std::string path, cf::method method, route_wrapper&& rw);
+
+    // capture path
+    void capture_var_from_path(const std::string& path,
+                               std::regex& capture_regex,
+                               cf::context& ctx,
+                               const std::vector<std::string>& captures_names);
 
 public:
     router() = default;

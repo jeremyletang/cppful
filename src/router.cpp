@@ -27,9 +27,10 @@
 
 namespace cf {
 
-const std::string router::var_regex = "([-_a-zA-Z0-9]*)";
-const std::string router::wildcard_regex = "[-_a-z0-9A-Z]*";
-const std::string router::two_wildcard_regex = "[/-_a-z0-9A-Z]*";
+const std::string router::capture_regex = "([-_a-zA-Z0-9]*)";
+const std::string router::match_regex = "[-_a-z0-9A-Z]*";
+const std::string router::two_wildcard_capture_regex = "([/-_a-z0-9A-Z]*)";
+const std::string router::two_wildcard_match_regex = "[/-_a-z0-9A-Z]*";
 
 const std::regex router::find_var_regex = std::regex(":[-_a-zA-Z0-9]*");
 const std::regex router::find_wildcard_regex = std::regex("(\\*)");
@@ -94,13 +95,14 @@ std::vector<std::string> router::make_var_captures(std::string path) {
     return cap;
 }
 
-std::pair<std::regex, std::vector<std::string>> router::make_route_regex(std::string path) {
-    auto cap = this->make_var_captures(path);
+void router::make_route_regex(std::string path, router::route_data& rd) {
+    rd.var_names  = std::move(this->make_var_captures(path));
     path = std::regex_replace(path, this->find_two_wildcard_regex, "__TWO_WILDCARD_PLACEHOLDER__");
-    path = std::regex_replace(path, this->find_wildcard_regex, this->wildcard_regex);
-    path = std::regex_replace(path, this->find_placeholder_regex, this->two_wildcard_regex);
-    path = std::regex_replace(path, this->find_var_regex, this->var_regex);
-    return std::make_pair(std::regex(path), cap);
+    path = std::regex_replace(path, this->find_wildcard_regex, this->match_regex);
+    path = std::regex_replace(path, this->find_placeholder_regex, this->two_wildcard_match_regex);
+    path = std::regex_replace(path, this->find_var_regex, this->capture_regex);
+
+    rd.match_path = std::regex(path);
 }
 
 std::vector<std::pair<std::string, cf::method>> router::validate() {
@@ -131,8 +133,6 @@ std::vector<std::pair<std::string, cf::method>> router::validate() {
     return dup_list;
 }
 
-
-
 bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     auto search_path = this->routes.find(path);
     if(search_path not_eq this->routes.end()) {
@@ -145,13 +145,11 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
             search_path->second.methods_map.emplace(std::move(method), std::move(rw));
         }
     } else {
-        // create the regex to match the path
-        auto path_regex = this->make_route_regex(path);
         // creat the route_data which will contains the routes
-        auto rd = router::route_data{
-            std::move(path_regex.first),
-            std::move(path_regex.second)
-        };
+        auto rd = router::route_data{};
+        // create the regex to match the path
+        this->make_route_regex(path, rd);
+
         // insert current data
         rd.methods_map.emplace(std::move(method), std::move(rw));
         // insert the map inside the routes map
@@ -160,11 +158,25 @@ bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     return true;
 }
 
+void router::capture_var_from_path(const std::string& path,
+                                   std::regex& capture_regex,
+                                   cf::context& ctx,
+                                   const std::vector<std::string>& captures_names) {
+    if (not captures_names.empty()) {
+        std::smatch match;
+        unsigned int i = 1;
+        std::regex_search(path, match, capture_regex);
+        std::for_each(captures_names.begin(),
+                      captures_names.end(),
+                      [&](auto& name) { ctx.vars[name] = match[i]; i += 1; });
+    }
+}
+
 cf::response router::dispatch(cf::context& ctx) {
-    auto sanized_path = this->sanitize_path(ctx.path);
+    auto sanitized_path = this->sanitize_path(ctx.path);
     for (auto& r : this->routes) {
         // if the path match
-        if (std::regex_match(sanized_path, r.second.match_path)) {
+        if (std::regex_match(sanitized_path, r.second.match_path)) {
             // try to find the route for the method
             auto good_route = r.second.methods_map.find(ctx.method);
             if (good_route not_eq r.second.methods_map.end()) {
@@ -178,6 +190,13 @@ cf::response router::dispatch(cf::context& ctx) {
                 } catch (cf::stop& s) {
                     return s.unwrap_response();
                 }
+                // captures in path
+                this->capture_var_from_path(sanitized_path,
+                                            r.second.match_path,
+                                            ctx,
+                                            r.second.var_names);
+                // this->capture_wildards_from_path(sanitized_path, r.second.match_path, ctx);
+                // this->capture_dwildcards_from_path(sanitized_path, r.second.match_path, ctx);
                 // call the route
                 return good_route->second.handler(ctx);
             }
