@@ -44,13 +44,13 @@ struct route {
     route(const route& oth);
 
     template<typename H>
-    route(cf::method m, std::string path, H handler, std::vector<std::string> middlewares = {}) {
+    route(cf::method m, std::string path, H&& handler, std::vector<std::string> middlewares = {}) {
         static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
                       "error, route handler must be convertible to std::function");
         this->method = std::move(m);
         this->path = std::move(path);
-        this->handler = handler;
-        this->middlewares = middlewares;
+        this->handler = std::move(handler);
+        this->middlewares = std::move(middlewares);
     }
 
     ~route() = default;

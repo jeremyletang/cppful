@@ -37,14 +37,6 @@ struct middleware {
     middleware(middleware&& oth);
     middleware(const middleware& oth);
 
-    // template<typename H>
-    // middleware(std::string name, H handler) {
-    //     static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,
-    //                   "error, middleware handler must be convertible to std::function");
-    //     this->name = std::move(name);
-    //     this->handler = handler;
-    // }
-
     template<typename H>
     middleware(std::string name, H&& handler) {
         static_assert(std::is_convertible<H, std::function<void(cf::context&)>>::value,

@@ -42,9 +42,9 @@ public:
     // build a route
     template<typename H>
     middleware_wrapper(cf::method m,
-                       std::string path, H handler,
+                       std::string path, H&& handler,
                        std::vector<std::string> middlewares = {})
-    : route(std::move(m), std::move(path), handler, middlewares)
+    : route(std::move(m), std::move(path), std::move(handler), middlewares)
     , middleware({})
     , kind(middleware_kind::route) {
         static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
