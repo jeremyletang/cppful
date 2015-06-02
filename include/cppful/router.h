@@ -138,11 +138,38 @@ public:
     cf::response dispatch(cf::context& ctxt);
 
     template <typename H>
-    void set_not_found_handler(H handler) {
+    router& set_not_found_handler(H handler) {
         static_assert(std::is_convertible<H, std::function<cf::response(cf::context&)>>::value,
                       "error, route handler must be convertible to std::function");
         this->path_not_found_handler = handler;
+        return *this;
     }
+
+    template <typename H>
+    router& get(std::string path, H&& handler, std::vector<std::string> middlewares = {}) {
+        this->add_route(std::move(cf::route{cf::method::get, path, handler, middlewares}));
+        return *this;
+    }
+
+    template <typename H>
+    router& post(std::string path, H&& handler, std::vector<std::string> middlewares = {}) {
+        this->add_route(std::move({cf::method::post, path, handler, middlewares}));
+        return *this;
+    }
+
+    template <typename H>
+    router& put(std::string path, H&& handler, std::vector<std::string> middlewares = {}) {
+        this->add_route(std::move({cf::method::put, path, handler, middlewares}));
+        return *this;
+    }
+
+    template <typename H>
+    router& delete_(std::string path, H&& handler, std::vector<std::string> middlewares = {}) {
+        this->add_route(std::move({cf::method::delete_, path, handler, middlewares}));
+        return *this;
+    }
+
+    router& add_route(cf::route&& route);
 
     void set_base_route(std::string base_url);
     const std::string& get_base_route() const;

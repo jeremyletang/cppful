@@ -46,8 +46,9 @@ cf::response make_person(cf::context& ctx) {
 }
 
 int main() {
+    auto&& sm = sql_middleware{};
     auto app = cf::server {
         { { cf::method::get, "/person", make_person, {"mysql_middleware"} },
-          { "mysql_middleware", sql_middleware{} }}
+          { "mysql_middleware", std::move(sm) } }
     }.forever();
 }

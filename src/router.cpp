@@ -185,6 +185,18 @@ std::vector<std::pair<std::string, cf::method>> router::validate() {
     return dup_list;
 }
 
+router& router::add_route(cf::route&& route) {
+    auto full_path = this->base_route + route.path;
+    auto sanitized_path = this->sanitize_path(full_path);
+    // make the route_wrapper
+    auto rw = router::route_wrapper {
+        std::move(route.handler),
+        std::move(route.middlewares),
+    };
+    this->insert(sanitized_path, route.method, std::move(rw));
+    return *this;
+}
+
 bool router::insert(std::string path, cf::method method, route_wrapper&& rw) {
     auto search_path = this->routes.find(path);
     if(search_path not_eq this->routes.end()) {
